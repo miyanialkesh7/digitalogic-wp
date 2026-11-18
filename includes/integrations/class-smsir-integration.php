@@ -91,14 +91,14 @@ final class Digitalogic_Smsir_Integration
         $line = $request->get_param('lineNumber') ?: self::line_number();
 
         if ($message === '') {
-            return new WP_Error('digitalogic_sms_empty_message', 'Message is required.', array('status' => 400));
+            return new WP_Error('digitalogic_sms_empty_message', __( 'Message is required.', 'digitalogic' ), array('status' => 400));
         }
 
         $mobiles = is_array($to) ? $to : preg_split('/[\s,]+/', (string) $to, -1, PREG_SPLIT_NO_EMPTY);
         $mobiles = array_values(array_filter(array_map(array(__CLASS__, 'normalize_mobile'), $mobiles)));
 
         if (empty($mobiles)) {
-            return new WP_Error('digitalogic_sms_empty_to', 'At least one valid recipient is required.', array('status' => 400));
+            return new WP_Error('digitalogic_sms_empty_to', __( 'At least one valid recipient is required.', 'digitalogic' ), array('status' => 400));
         }
 
         $result = self::send_bulk($mobiles, $message, $line);
@@ -251,7 +251,7 @@ final class Digitalogic_Smsir_Integration
         $code = wp_remote_retrieve_response_code($response);
         $data = json_decode(wp_remote_retrieve_body($response), true);
         if ($code < 200 || $code >= 300 || !is_array($data) || (isset($data['status']) && (int) $data['status'] !== 1)) {
-            return new WP_Error('digitalogic_smsir_api_error', 'SMS.ir API request failed.', array(
+            return new WP_Error('digitalogic_smsir_api_error', __( 'SMS.ir API request failed.', 'digitalogic' ), array(
                 'status' => $code ?: 502,
                 'response' => $data,
             ));

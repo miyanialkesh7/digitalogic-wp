@@ -63,7 +63,7 @@ final class Digitalogic_Patris_Catalog_Backfill {
 			&& is_numeric( $record['weight_grams'] ?? null ) && (float) $record['weight_grams'] > 0;
 		if ( empty( $policy['enabled'] ) || ! $this->policy_matches_source( $policy, $source )
 			|| ( ! $positive && empty( $policy['allow_non_positive'] ) ) ) {
-			return new WP_Error( 'digitalogic_patris_creation_policy_blocked', 'Missing product creation is outside the configured owner policy.' );
+			return new WP_Error( 'digitalogic_patris_creation_policy_blocked', __( 'Missing product creation is outside the configured owner policy.', 'digitalogic' ) );
 		}
 		return $policy;
 	}
@@ -105,13 +105,13 @@ final class Digitalogic_Patris_Catalog_Backfill {
 		if ( ! update_option( self::POLICY_OPTION, $normalized, false ) ) {
 			$current = get_option( self::POLICY_OPTION, array() );
 			if ( ! is_array( $current ) || $this->canonical_hash( $current ) !== $this->canonical_hash( $normalized ) ) {
-				return new WP_Error( 'digitalogic_patris_backfill_policy_store_failed', 'The catalog materialization policy could not be stored.' );
+				return new WP_Error( 'digitalogic_patris_backfill_policy_store_failed', __( 'The catalog materialization policy could not be stored.', 'digitalogic' ) );
 			}
 		}
 		wp_cache_delete( self::POLICY_OPTION, 'options' );
 		$readback = get_option( self::POLICY_OPTION, array() );
 		if ( ! is_array( $readback ) || $this->canonical_hash( $readback ) !== $this->canonical_hash( $normalized ) ) {
-			return new WP_Error( 'digitalogic_patris_backfill_policy_readback_failed', 'The catalog materialization policy failed readback.' );
+			return new WP_Error( 'digitalogic_patris_backfill_policy_readback_failed', __( 'The catalog materialization policy failed readback.', 'digitalogic' ) );
 		}
 		return $normalized;
 	}

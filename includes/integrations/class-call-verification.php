@@ -1722,6 +1722,7 @@ final class Digitalogic_Call_Verification {
 					'finishing'       => $persian ? 'کد تأیید شد. در حال تکمیل ورود…' : 'Code confirmed. Finishing sign-in…',
 					'expired'         => __( 'This code expired. Please request another code.', 'digitalogic' ),
 					'error'           => __( 'Verification could not be completed. Please try again.', 'digitalogic' ),
+					/* translators: %s: number of seconds remaining before the code expires. */
 					'remaining'       => __( '%s seconds remaining', 'digitalogic' ),
 					'confirmDrop'     => __( 'Removing this contact also disables voice notifications. Continue?', 'digitalogic' ),
 					'invalidPhone'    => __( 'Enter a valid Iranian mobile or landline number with its area code.', 'digitalogic' ),

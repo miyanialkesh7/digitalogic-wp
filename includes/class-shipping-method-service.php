@@ -816,7 +816,7 @@ final class Digitalogic_Shipping_Method_Service {
 					|| (string) ( $identity['patris_code'] ?? '' ) !== $code
 					|| (int) ( $identity['woocommerce_id'] ?? 0 ) <= 0
 				) ) {
-					return new WP_Error( 'digitalogic_pricing_assignment_identity_invalid', 'The same-operation shipping identity is missing or mismatched.', array( 'status' => 409 ) );
+					return new WP_Error( 'digitalogic_pricing_assignment_identity_invalid', __( 'The same-operation shipping identity is missing or mismatched.', 'digitalogic' ), array( 'status' => 409 ) );
 				}
 				$identities[ $code ] = $identity;
 			}
@@ -2065,7 +2065,7 @@ final class Digitalogic_Shipping_Method_Service {
         if ( ! is_array( $rows ) ) {
             return new WP_Error(
                 'digitalogic_shipping_assignment_read_failed',
-                'Owner shipping assignments could not be read.',
+                __( 'Owner shipping assignments could not be read.', 'digitalogic' ),
                 array( 'status' => 503 )
             );
         }
@@ -2908,6 +2908,7 @@ final class Digitalogic_Shipping_Method_Service {
         if (strlen($fraction) > self::DEFAULT_MARKUP_MAX_SCALE) {
             return new WP_Error(
                 'digitalogic_shipping_default_markup_scale_invalid',
+                /* translators: %d: maximum number of fractional digits. */
                 sprintf(__('Default markup supports at most %d fractional digits.', 'digitalogic'), self::DEFAULT_MARKUP_MAX_SCALE),
                 array('status' => 400, 'maximum_fraction_digits' => self::DEFAULT_MARKUP_MAX_SCALE)
             );
@@ -2922,6 +2923,7 @@ final class Digitalogic_Shipping_Method_Service {
         ) {
             return new WP_Error(
                 'digitalogic_shipping_default_markup_out_of_range',
+                /* translators: %s: maximum markup percentage. */
                 sprintf(__('Default markup must be between 0 and %s percent.', 'digitalogic'), self::DEFAULT_MARKUP_MAX_PERCENT),
                 array('status' => 400, 'minimum' => '0', 'maximum' => self::DEFAULT_MARKUP_MAX_PERCENT)
             );

@@ -371,7 +371,7 @@ final class Digitalogic_Product_Identity {
 			return $data;
 		}
 
-		unset( $data[ __( 'Price', 'seo-by-rank-math' ) ], $data['Price'] );
+		unset( $data[ __( 'Price', 'seo-by-rank-math' ) ], $data['Price'] ); // phpcs:ignore WordPress.WP.I18n.TextDomainMismatch -- Matches the SEO plugin data key, which uses its own text domain.
 
 		return $data;
 	}

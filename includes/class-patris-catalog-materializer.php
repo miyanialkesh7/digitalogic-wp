@@ -3113,7 +3113,7 @@ final class Digitalogic_Patris_Catalog_Materializer {
 
 		return new WP_Error(
 			'digitalogic_patris_materializer_draft_rollback_unknown',
-			'The failed draft identity could not be removed and requires exact reconciliation.',
+			__( 'The failed draft identity could not be removed and requires exact reconciliation.', 'digitalogic' ),
 			array(
 				'status'     => 409,
 				'retryable'  => false,
@@ -3516,7 +3516,7 @@ final class Digitalogic_Patris_Catalog_Materializer {
 
 		return new WP_Error(
 			'digitalogic_patris_materializer_rollback_unknown',
-			'The reviewed product write and rollback require exact reconciliation.',
+			__( 'The reviewed product write and rollback require exact reconciliation.', 'digitalogic' ),
 			array(
 				'status'     => 409,
 				'retryable'  => false,
@@ -3634,7 +3634,7 @@ final class Digitalogic_Patris_Catalog_Materializer {
 	private function source_write_outcome_unknown( $product_id, $cause = null ) {
 		return new WP_Error(
 			'digitalogic_patris_materializer_write_outcome_unknown',
-			'The reviewed product write lost its lock and requires exact reconciliation.',
+			__( 'The reviewed product write lost its lock and requires exact reconciliation.', 'digitalogic' ),
 			array(
 				'status'           => 409,
 				'retryable'        => false,
@@ -4229,7 +4229,7 @@ final class Digitalogic_Patris_Catalog_Materializer {
 	private function identity_hazard( $reason, $code ) {
 		return new WP_Error(
 			'digitalogic_patris_materializer_identity_hazard',
-			'The source product cannot be materialized until its identity conflict is reconciled.',
+			__( 'The source product cannot be materialized until its identity conflict is reconciled.', 'digitalogic' ),
 			array(
 				'status'       => 409,
 				'retryable'    => false,
@@ -4360,7 +4360,7 @@ final class Digitalogic_Patris_Catalog_Materializer {
 		if ( ! empty( $missing ) || ! empty( $unknown ) ) {
 			return new WP_Error(
 				'digitalogic_patris_materializer_manifest_shape',
-				'The enrichment manifest object has missing or unknown fields.',
+				__( 'The enrichment manifest object has missing or unknown fields.', 'digitalogic' ),
 				array(
 					'path'    => $path,
 					'missing' => $missing,
@@ -4402,7 +4402,7 @@ final class Digitalogic_Patris_Catalog_Materializer {
 	private function manifest_error( $path, $message ) {
 		return new WP_Error(
 			'digitalogic_patris_materializer_manifest_invalid',
-			'The enrichment manifest is invalid.',
+			__( 'The enrichment manifest is invalid.', 'digitalogic' ),
 			array(
 				'path'   => (string) $path,
 				'reason' => (string) $message,

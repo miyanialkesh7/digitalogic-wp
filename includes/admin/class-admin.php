@@ -784,6 +784,7 @@ class Digitalogic_Admin {
                     ));
                     $notice = is_wp_error($result)
                         ? $result->get_error_message()
+						/* translators: %s: shipping method name. */
 						: sprintf(__('Shipping method "%s" created.', 'digitalogic'), $result['name']);
                     $notice_type = is_wp_error($result) ? 'error' : 'success';
                     break;
@@ -798,6 +799,7 @@ class Digitalogic_Admin {
                     ));
                     $notice = is_wp_error($result)
                         ? $result->get_error_message()
+						/* translators: %s: shipping method name. */
 						: sprintf(__('Shipping method "%s" updated.', 'digitalogic'), $result['name']);
                     $notice_type = is_wp_error($result) ? 'error' : 'success';
                     break;
@@ -870,7 +872,7 @@ class Digitalogic_Admin {
 								continue;
 							}
 							if ( ! is_string( $threshold ) || ! is_string( $digit ) || ! preg_match( '/\A[0-9]+\z/D', $digit ) || '' === $threshold ) {
-								$result = new WP_Error( 'invalid_rounding_policy', 'در هر ردیف، مبلغ شروع و تعداد رقم را کامل وارد کنید.' );
+								$result = new WP_Error( 'invalid_rounding_policy', __( 'در هر ردیف، مبلغ شروع و تعداد رقم را کامل وارد کنید.', 'digitalogic' ) );
 								break;
 							}
 							$policy['tiers'][] = array(
@@ -879,7 +881,7 @@ class Digitalogic_Admin {
 							);
 						}
 					} elseif ( 'fixed' !== $selection ) {
-						$result = new WP_Error( 'invalid_rounding_selection', 'روش گردکردن را انتخاب کنید.' );
+						$result = new WP_Error( 'invalid_rounding_selection', __( 'روش گردکردن را انتخاب کنید.', 'digitalogic' ) );
 					}
 					if ( ! is_wp_error( $result ) ) {
 						$result = Digitalogic_Pricing_Coordinator::instance()->update_price_rounding(

@@ -82,7 +82,7 @@ final class Digitalogic_Shatel_SMS_Primary {
 		}
 
 		if ( array_key_exists( 'fallback_safe', $result ) && false === $result['fallback_safe'] ) {
-			return new WP_Error( 'digitalogic_shatel_submission_uncertain', 'OTP delivery is still being confirmed. Please wait before requesting another code.' );
+			return new WP_Error( 'digitalogic_shatel_submission_uncertain', __( 'OTP delivery is still being confirmed. Please wait before requesting another code.', 'digitalogic' ) );
 		}
 
 		if ( empty( $result['ok'] ) || empty( $result['accepted'] ) || empty( $result['outbox_id'] ) ) {

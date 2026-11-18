@@ -1033,7 +1033,7 @@ final class Digitalogic_Report_Engine {
 		try {
 			do_action( 'digitalogic_report_projection_invalidated', $token );
 		} catch ( Throwable $exception ) {
-			return new WP_Error( 'digitalogic_report_notification_failed', 'The terminal report invalidation notification could not be delivered in this request.', array( 'status' => 503 ) );
+			return new WP_Error( 'digitalogic_report_notification_failed', __( 'The terminal report invalidation notification could not be delivered in this request.', 'digitalogic' ), array( 'status' => 503 ) );
 		}
 		if ( $this->pending_projection_notification === $token ) {
 			$this->pending_projection_notification = '';
@@ -1050,7 +1050,7 @@ final class Digitalogic_Report_Engine {
 	private function pricing_report_unavailable() {
 		return new WP_Error(
 			'digitalogic_report_pricing_transaction_pending',
-			'The report awaits a verified pricing transaction and cache fence.',
+			__( 'The report awaits a verified pricing transaction and cache fence.', 'digitalogic' ),
 			array( 'status' => 503 )
 		);
 	}
@@ -1072,7 +1072,7 @@ final class Digitalogic_Report_Engine {
 		if ( 1 !== preg_match( '/\Asha256:[a-f0-9]{64}\z/D', $effect_id ) ) {
 			return new WP_Error(
 				'digitalogic_report_effect_identity_invalid',
-				'شناسهٔ اثر تغییر گزارش معتبر نیست.',
+				__( 'شناسهٔ اثر تغییر گزارش معتبر نیست.', 'digitalogic' ),
 				array( 'blocking' => true )
 			);
 		}
@@ -1100,7 +1100,7 @@ final class Digitalogic_Report_Engine {
 					if ( ! $this->store_effect_receipts( $receipts ) ) {
 						return new WP_Error(
 							'digitalogic_report_effect_receipt_store_failed',
-							'ثبت رسید پایدار تغییر گزارش ممکن نشد.',
+							__( 'ثبت رسید پایدار تغییر گزارش ممکن نشد.', 'digitalogic' ),
 							array( 'blocking' => false, 'retry_after' => 2 )
 						);
 					}
@@ -1117,7 +1117,7 @@ final class Digitalogic_Report_Engine {
 						if ( ! $this->store_effect_receipts( $receipts ) ) {
 							return new WP_Error(
 								'digitalogic_report_effect_receipt_store_failed',
-								'ثبت پایان رسید تغییر گزارش ممکن نشد.',
+								__( 'ثبت پایان رسید تغییر گزارش ممکن نشد.', 'digitalogic' ),
 								array( 'blocking' => false, 'retry_after' => 2 )
 							);
 						}
@@ -1127,7 +1127,7 @@ final class Digitalogic_Report_Engine {
 					if ( ! $this->store_generation_token( $target ) ) {
 						return new WP_Error(
 							'digitalogic_report_effect_generation_store_failed',
-							'ثبت generation گزارش ممکن نشد.',
+							__( 'ثبت generation گزارش ممکن نشد.', 'digitalogic' ),
 							array( 'blocking' => false, 'retry_after' => 2 )
 						);
 					}
@@ -1139,7 +1139,7 @@ final class Digitalogic_Report_Engine {
 				if ( ! $this->store_effect_receipts( $receipts ) ) {
 					return new WP_Error(
 						'digitalogic_report_effect_receipt_store_failed',
-						'ثبت پایان رسید تغییر گزارش ممکن نشد.',
+						__( 'ثبت پایان رسید تغییر گزارش ممکن نشد.', 'digitalogic' ),
 						array( 'blocking' => false, 'retry_after' => 2 )
 					);
 				}
@@ -1151,7 +1151,7 @@ final class Digitalogic_Report_Engine {
 		if ( false === $result ) {
 			$result = new WP_Error(
 				'digitalogic_report_generation_lock_busy',
-				'تغییر دیگری در حال تازه‌سازی گزارش است.',
+				__( 'تغییر دیگری در حال تازه‌سازی گزارش است.', 'digitalogic' ),
 				array( 'blocking' => false, 'retry_after' => 2 )
 			);
 		}

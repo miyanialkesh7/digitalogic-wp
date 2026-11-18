@@ -267,7 +267,7 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 	 */
 	private function repair_product_ids( int $page, int $limit ) {
 		if ( ! function_exists( 'get_posts' ) ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_repair_query_unavailable', 'The product repair query is unavailable.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_repair_query_unavailable', __( 'The product repair query is unavailable.', 'digitalogic' ) );
 		}
 
 		$args = array(
@@ -319,10 +319,10 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 			$ids = apply_filters( self::REPAIR_IDS_FILTER, $ids, $page, $limit );
 		} catch ( Throwable $error ) {
 			unset( $error );
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_repair_query_failed', 'The product repair query failed.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_repair_query_failed', __( 'The product repair query failed.', 'digitalogic' ) );
 		}
 		if ( ! is_array( $ids ) ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_repair_query_invalid', 'The product repair query returned an invalid result.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_repair_query_invalid', __( 'The product repair query returned an invalid result.', 'digitalogic' ) );
 		}
 
 		$normalized = array();
@@ -346,7 +346,7 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 	 */
 	private function repair_snapshot( int $product_id ) {
 		if ( ! function_exists( 'wc_get_product' ) || ! function_exists( 'get_post_meta' ) ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_repair_product_unavailable', 'WooCommerce product repair is unavailable.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_repair_product_unavailable', __( 'WooCommerce product repair is unavailable.', 'digitalogic' ) );
 		}
 
 		$product = wc_get_product( $product_id );
@@ -356,7 +356,7 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 		}
 		foreach ( $methods as $method ) {
 			if ( ! is_callable( array( $product, $method ) ) ) {
-				return new WP_Error( 'digitalogic_patris_incomplete_alert_repair_product_invalid', 'The repair product is invalid.' );
+				return new WP_Error( 'digitalogic_patris_incomplete_alert_repair_product_invalid', __( 'The repair product is invalid.', 'digitalogic' ) );
 			}
 		}
 
@@ -383,20 +383,20 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 			|| '' === $price_status
 			|| sanitize_key( $price_status ) !== $price_status
 		) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_repair_identity_invalid', 'The repair product identity is invalid.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_repair_identity_invalid', __( 'The repair product identity is invalid.', 'digitalogic' ) );
 		}
 
 		$missing_json = get_post_meta( $product_id, self::MISSING_FIELDS_META, true );
 		if ( ! is_string( $missing_json ) ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_repair_fields_invalid', 'The repair missing-field snapshot is invalid.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_repair_fields_invalid', __( 'The repair missing-field snapshot is invalid.', 'digitalogic' ) );
 		}
 		$missing_fields = json_decode( $missing_json, true );
 		if ( JSON_ERROR_NONE !== json_last_error() ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_repair_fields_invalid', 'The repair missing-field snapshot is invalid.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_repair_fields_invalid', __( 'The repair missing-field snapshot is invalid.', 'digitalogic' ) );
 		}
 		$normalized_fields = $this->normalize_missing_fields( $missing_fields );
 		if ( is_wp_error( $normalized_fields ) || $missing_fields !== $normalized_fields ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_repair_fields_invalid', 'The repair missing-field snapshot is invalid.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_repair_fields_invalid', __( 'The repair missing-field snapshot is invalid.', 'digitalogic' ) );
 		}
 		$missing_fields = $normalized_fields;
 
@@ -425,7 +425,7 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 	private function persist_repair_page( int $page ) {
 		$lock = $this->acquire_store_lock();
 		if ( false === $lock ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_store_busy', 'The alert store is busy.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_store_busy', __( 'The alert store is busy.', 'digitalogic' ) );
 		}
 
 		try {
@@ -435,7 +435,7 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 			}
 			$store['repair_page'] = max( 1, $page );
 			if ( ! $this->store_verified( $store ) ) {
-				return new WP_Error( 'digitalogic_patris_incomplete_alert_repair_cursor_failed', 'The repair cursor could not be verified.' );
+				return new WP_Error( 'digitalogic_patris_incomplete_alert_repair_cursor_failed', __( 'The repair cursor could not be verified.', 'digitalogic' ) );
 			}
 
 			return true;
@@ -453,7 +453,7 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 	private function persist_snapshot_transitions( array $snapshots ) {
 		$lock = $this->acquire_store_lock();
 		if ( false === $lock ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_store_busy', 'The alert store is busy.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_store_busy', __( 'The alert store is busy.', 'digitalogic' ) );
 		}
 
 		try {
@@ -491,7 +491,7 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 					$event_id = $event['event_id'];
 					if ( ! isset( $store['receipts'][ $event_id ] ) && ! isset( $store['outbox'][ $event_id ] ) ) {
 						if ( count( $store['outbox'] ) >= self::MAX_OUTBOX_EVENTS ) {
-							return new WP_Error( 'digitalogic_patris_incomplete_alert_outbox_full', 'The alert outbox is full.' );
+							return new WP_Error( 'digitalogic_patris_incomplete_alert_outbox_full', __( 'The alert outbox is full.', 'digitalogic' ) );
 						}
 						$now                          = gmdate( 'c' );
 						$sequence                     = max( 1, (int) ( $store['next_sequence'] ?? 1 ) );
@@ -532,7 +532,7 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 			}
 			$store = $this->prune_store( $store );
 			if ( ! $this->store_verified( $store ) ) {
-				return new WP_Error( 'digitalogic_patris_incomplete_alert_store_failed', 'The alert store could not be verified.' );
+				return new WP_Error( 'digitalogic_patris_incomplete_alert_store_failed', __( 'The alert store could not be verified.', 'digitalogic' ) );
 			}
 
 			return array(
@@ -553,7 +553,7 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 	private function claim_due_events( int $limit ) {
 		$lock = $this->acquire_store_lock();
 		if ( false === $lock ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_store_busy', 'The alert store is busy.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_store_busy', __( 'The alert store is busy.', 'digitalogic' ) );
 		}
 
 		try {
@@ -622,7 +622,7 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 			}
 
 			if ( $changed && ! $this->store_verified( $store ) ) {
-				return new WP_Error( 'digitalogic_patris_incomplete_alert_claim_failed', 'The alert claims could not be verified.' );
+				return new WP_Error( 'digitalogic_patris_incomplete_alert_claim_failed', __( 'The alert claims could not be verified.', 'digitalogic' ) );
 			}
 
 			return $claims;
@@ -641,7 +641,7 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 	private function complete_claims( array $claims, array $deliveries ) {
 		$lock = $this->acquire_store_lock();
 		if ( false === $lock ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_store_busy', 'The alert store is busy.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_store_busy', __( 'The alert store is busy.', 'digitalogic' ) );
 		}
 
 		try {
@@ -657,7 +657,7 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 					$lost = true;
 					continue;
 				}
-				$delivery = $deliveries[ $event_id ] ?? new WP_Error( 'digitalogic_patris_incomplete_alert_delivery_missing', 'The adapter result is missing.' );
+				$delivery = $deliveries[ $event_id ] ?? new WP_Error( 'digitalogic_patris_incomplete_alert_delivery_missing', __( 'The adapter result is missing.', 'digitalogic' ) );
 
 				if ( ! is_wp_error( $delivery ) ) {
 					$store['receipts'][ $event_id ] = array(
@@ -688,10 +688,10 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 
 			$store = $this->prune_store( $store );
 			if ( ! $this->store_verified( $store ) ) {
-				return new WP_Error( 'digitalogic_patris_incomplete_alert_completion_failed', 'The alert completions could not be verified.' );
+				return new WP_Error( 'digitalogic_patris_incomplete_alert_completion_failed', __( 'The alert completions could not be verified.', 'digitalogic' ) );
 			}
 			if ( $lost ) {
-				return new WP_Error( 'digitalogic_patris_incomplete_alert_claim_lost', 'One or more alert claims are no longer current.' );
+				return new WP_Error( 'digitalogic_patris_incomplete_alert_claim_lost', __( 'One or more alert claims are no longer current.', 'digitalogic' ) );
 			}
 
 			return true;
@@ -712,28 +712,28 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 	 */
 	private function deliver_alert_event( $event ) {
 		if ( ! is_array( $event ) || ! $this->valid_event_id( $event['event_id'] ?? null ) ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_event_invalid', 'The alert event is invalid.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_event_invalid', __( 'The alert event is invalid.', 'digitalogic' ) );
 		}
 		if ( ! hash_equals( (string) $event['event_id'], (string) ( $event['idempotency_key'] ?? '' ) ) ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_identity_invalid', 'The alert idempotency identity is invalid.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_identity_invalid', __( 'The alert idempotency identity is invalid.', 'digitalogic' ) );
 		}
 		if ( array( self::CHANNEL ) !== ( $event['notify_channels'] ?? null ) ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_channel_invalid', 'The alert channel allow-list is invalid.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_channel_invalid', __( 'The alert channel allow-list is invalid.', 'digitalogic' ) );
 		}
 		if ( array( self::OPERATOR_KEY ) !== ( $event['audience']['operators'] ?? null ) ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_audience_invalid', 'The alert audience is invalid.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_audience_invalid', __( 'The alert audience is invalid.', 'digitalogic' ) );
 		}
 
 		$adapter = apply_filters( self::ADAPTER_FILTER, null, $event );
 		if ( ! is_callable( $adapter ) ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_route_unavailable', 'The private operator route is unavailable.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_route_unavailable', __( 'The private operator route is unavailable.', 'digitalogic' ) );
 		}
 
 		try {
 			$receipt = call_user_func( $adapter, $event );
 		} catch ( Throwable $error ) {
 			unset( $error );
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_route_failed', 'The private operator route failed.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_route_failed', __( 'The private operator route failed.', 'digitalogic' ) );
 		}
 		if ( is_wp_error( $receipt ) ) {
 			return $receipt;
@@ -751,7 +751,7 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 	 */
 	private function normalize_provider_receipt( $receipt, array $event ) {
 		if ( ! is_array( $receipt ) || array_is_list( $receipt ) ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_receipt_invalid', 'The private operator route returned an invalid receipt.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_receipt_invalid', __( 'The private operator route returned an invalid receipt.', 'digitalogic' ) );
 		}
 
 		$provider_receipt = is_array( $receipt['provider_receipt'] ?? null ) ? $receipt['provider_receipt'] : array();
@@ -767,7 +767,7 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 		$n8n_status_code  = isset( $receipt['n8n_status_code'] ) ? absint( $receipt['n8n_status_code'] ) : 0;
 
 		if ( in_array( $status, array( 'pending', 'accepted', 'queued' ), true ) ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_route_pending', 'The private operator route has not produced a provider receipt yet.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_route_pending', __( 'The private operator route has not produced a provider receipt yet.', 'digitalogic' ) );
 		}
 		if (
 			! in_array( $status, array( 'delivered', 'sent', 'success' ), true )
@@ -780,7 +780,7 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 			|| false === $delivered_time
 			|| ( $n8n_status_code > 0 && ( $n8n_status_code < 200 || $n8n_status_code >= 300 ) )
 		) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_receipt_invalid', 'The private operator route returned an invalid receipt.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_receipt_invalid', __( 'The private operator route returned an invalid receipt.', 'digitalogic' ) );
 		}
 
 		$normalized = array(
@@ -834,7 +834,7 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 		);
 		$json        = wp_json_encode( $identity, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
 		if ( ! is_string( $json ) ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_identity_failed', 'The alert identity could not be encoded.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_identity_failed', __( 'The alert identity could not be encoded.', 'digitalogic' ) );
 		}
 		$event_id        = 'sha256:' . hash( 'sha256', $json );
 		$labels          = $this->missing_labels( $current );
@@ -932,7 +932,7 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 	 */
 	private function normalize_snapshot( $snapshot ) {
 		if ( ! is_array( $snapshot ) || array_is_list( $snapshot ) ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_snapshot_invalid', 'The committed snapshot is invalid.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_snapshot_invalid', __( 'The committed snapshot is invalid.', 'digitalogic' ) );
 		}
 
 		$product_id      = absint( $snapshot['product_id'] ?? 0 );
@@ -955,7 +955,7 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 			|| ! is_bool( $snapshot['purchasable'] ?? null )
 			|| is_wp_error( $missing_fields )
 		) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_snapshot_invalid', 'The committed snapshot is invalid.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_snapshot_invalid', __( 'The committed snapshot is invalid.', 'digitalogic' ) );
 		}
 
 		return array(
@@ -980,12 +980,12 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 	 */
 	private function normalize_missing_fields( $fields ) {
 		if ( ! is_array( $fields ) || ! array_is_list( $fields ) ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_fields_invalid', 'The missing-field list is invalid.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_fields_invalid', __( 'The missing-field list is invalid.', 'digitalogic' ) );
 		}
 		$normalized = array();
 		foreach ( $fields as $field ) {
 			if ( ! is_string( $field ) || ! array_key_exists( $field, self::MISSING_FIELD_LABELS ) ) {
-				return new WP_Error( 'digitalogic_patris_incomplete_alert_fields_invalid', 'The missing-field list is invalid.' );
+				return new WP_Error( 'digitalogic_patris_incomplete_alert_fields_invalid', __( 'The missing-field list is invalid.', 'digitalogic' ) );
 			}
 			$normalized[] = $field;
 		}
@@ -1105,7 +1105,7 @@ final class Digitalogic_Patris_Incomplete_Product_Notifier {
 			|| ! is_array( $raw['outbox'] ?? null )
 			|| ! is_array( $raw['receipts'] ?? null )
 		) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_store_invalid', 'The alert store is invalid.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_store_invalid', __( 'The alert store is invalid.', 'digitalogic' ) );
 		}
 
 		return $this->prune_store( $raw );

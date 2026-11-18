@@ -142,7 +142,7 @@ final class Digitalogic_Pricing_Input_Credential {
 				if ( 'active' === $state ) {
 					return new WP_Error(
 						'digitalogic_pricing_input_already_active',
-						'An active pricing-input credential already exists; rotate it instead.',
+						__( 'An active pricing-input credential already exists; rotate it instead.', 'digitalogic' ),
 						array( 'status' => 409 )
 					);
 				}
@@ -183,7 +183,7 @@ final class Digitalogic_Pricing_Input_Credential {
 				if ( 'active' !== $this->record_state( $record ) ) {
 					return new WP_Error(
 						'digitalogic_pricing_input_not_active',
-						'No active pricing-input credential is available to rotate.',
+						__( 'No active pricing-input credential is available to rotate.', 'digitalogic' ),
 						array( 'status' => 409 )
 					);
 				}
@@ -214,7 +214,7 @@ final class Digitalogic_Pricing_Input_Credential {
 				if ( 'active' !== $state ) {
 					return new WP_Error(
 						'digitalogic_pricing_input_not_active',
-						'No active pricing-input credential is available to revoke.',
+						__( 'No active pricing-input credential is available to revoke.', 'digitalogic' ),
 						array( 'status' => 409 )
 					);
 				}
@@ -273,7 +273,7 @@ final class Digitalogic_Pricing_Input_Credential {
 		} catch ( Throwable $error ) {
 			return new WP_Error(
 				'digitalogic_pricing_input_generation_failed',
-				'The pricing-input credential could not be generated.',
+				__( 'The pricing-input credential could not be generated.', 'digitalogic' ),
 				array( 'status' => 500 )
 			);
 		}
@@ -421,7 +421,7 @@ final class Digitalogic_Pricing_Input_Credential {
 		if ( '1' !== (string) $locked ) {
 			return new WP_Error(
 				'digitalogic_pricing_input_lifecycle_busy',
-				'The pricing-input credential lifecycle is busy; retry later.',
+				__( 'The pricing-input credential lifecycle is busy; retry later.', 'digitalogic' ),
 				array(
 					'status'    => 503,
 					'retryable' => true,
@@ -779,7 +779,7 @@ final class Digitalogic_Pricing_Input_Credential {
 	private function configuration_error() {
 		return new WP_Error(
 			'digitalogic_pricing_input_configuration_invalid',
-			'The pricing-input credential configuration is invalid.',
+			__( 'The pricing-input credential configuration is invalid.', 'digitalogic' ),
 			array( 'status' => 500 )
 		);
 	}
@@ -792,7 +792,7 @@ final class Digitalogic_Pricing_Input_Credential {
 	private function concurrency_error() {
 		return new WP_Error(
 			'digitalogic_pricing_input_lifecycle_conflict',
-			'The pricing-input credential changed concurrently; retry.',
+			__( 'The pricing-input credential changed concurrently; retry.', 'digitalogic' ),
 			array(
 				'status'    => 409,
 				'retryable' => true,
@@ -808,7 +808,7 @@ final class Digitalogic_Pricing_Input_Credential {
 	private function storage_error() {
 		return new WP_Error(
 			'digitalogic_pricing_input_storage_unavailable',
-			'The pricing-input credential storage is unavailable.',
+			__( 'The pricing-input credential storage is unavailable.', 'digitalogic' ),
 			array(
 				'status'    => 503,
 				'retryable' => true,
@@ -824,7 +824,7 @@ final class Digitalogic_Pricing_Input_Credential {
 	private function lifecycle_error() {
 		return new WP_Error(
 			'digitalogic_pricing_input_lifecycle_failed',
-			'The pricing-input credential lifecycle could not be completed.',
+			__( 'The pricing-input credential lifecycle could not be completed.', 'digitalogic' ),
 			array( 'status' => 500 )
 		);
 	}
@@ -837,7 +837,7 @@ final class Digitalogic_Pricing_Input_Credential {
 	private function write_error() {
 		return new WP_Error(
 			'digitalogic_pricing_input_write_failed',
-			'The pricing-input credential could not be stored.',
+			__( 'The pricing-input credential could not be stored.', 'digitalogic' ),
 			array( 'status' => 500 )
 		);
 	}

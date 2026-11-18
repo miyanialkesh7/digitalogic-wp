@@ -108,7 +108,7 @@ final class Digitalogic_Organizer_Products_Endpoint {
 		if ( 'GET' !== $method || 1 !== preg_match( self::MEDIA_ROUTE_MATCH, $route ) ) {
 			return new WP_Error(
 				'digitalogic_organizer_media_scope_mismatch',
-				'Organizer media access is restricted to its exact read-only route.',
+				__( 'Organizer media access is restricted to its exact read-only route.', 'digitalogic' ),
 				array( 'status' => 403 )
 			);
 		}
@@ -116,7 +116,7 @@ final class Digitalogic_Organizer_Products_Endpoint {
 		if ( ! current_user_can( self::CAPABILITY ) ) {
 			return new WP_Error(
 				'digitalogic_organizer_media_forbidden',
-				'Organizer media authentication failed.',
+				__( 'Organizer media authentication failed.', 'digitalogic' ),
 				array( 'status' => get_current_user_id() > 0 ? 403 : 401 )
 			);
 		}
@@ -136,7 +136,7 @@ final class Digitalogic_Organizer_Products_Endpoint {
 		if ( 'GET' !== $method || self::ROUTE !== $route ) {
 			return new WP_Error(
 				'digitalogic_organizer_catalog_scope_mismatch',
-				'Organizer catalog access is restricted to its exact read-only route.',
+				__( 'Organizer catalog access is restricted to its exact read-only route.', 'digitalogic' ),
 				array( 'status' => 403 )
 			);
 		}
@@ -144,7 +144,7 @@ final class Digitalogic_Organizer_Products_Endpoint {
 		if ( ! current_user_can( self::CAPABILITY ) ) {
 			return new WP_Error(
 				'digitalogic_organizer_catalog_forbidden',
-				'Organizer catalog authentication failed.',
+				__( 'Organizer catalog authentication failed.', 'digitalogic' ),
 				array( 'status' => get_current_user_id() > 0 ? 403 : 401 )
 			);
 		}
@@ -176,7 +176,7 @@ final class Digitalogic_Organizer_Products_Endpoint {
 		if ( $page > $pages ) {
 			return new WP_Error(
 				'digitalogic_organizer_catalog_page_out_of_range',
-				'The requested organizer catalog page does not exist.',
+				__( 'The requested organizer catalog page does not exist.', 'digitalogic' ),
 				array(
 					'status' => 400,
 					'pages'  => $pages,
@@ -441,7 +441,7 @@ final class Digitalogic_Organizer_Products_Endpoint {
 	}
 
 	private function media_error( $code, $status ) {
-		return new WP_Error( $code, 'Committed WordPress media is unavailable.', array( 'status' => $status ) );
+		return new WP_Error( $code, __( 'Committed WordPress media is unavailable.', 'digitalogic' ), array( 'status' => $status ) );
 	}
 
 	/**
@@ -472,7 +472,7 @@ final class Digitalogic_Organizer_Products_Endpoint {
 		if ( count( $ids ) > self::MAX_SNAPSHOT_PRODUCTS ) {
 			return new WP_Error(
 				'digitalogic_organizer_catalog_snapshot_too_large',
-				'The organizer catalog exceeds the reviewed snapshot bound.',
+				__( 'The organizer catalog exceeds the reviewed snapshot bound.', 'digitalogic' ),
 				array(
 					'status'            => 503,
 					'snapshot_complete' => false,

@@ -112,9 +112,9 @@ $wc_features['Plugin Compatible'] = $hpos_status['plugin_compatible'] ? 'Yes' : 
                     <td>
                         <?php echo esc_html($php_version); ?>
                         <?php if ($php_supported) : ?>
-                            <span style="color: green;">✓ <?php echo esc_html(sprintf(__('Supported (minimum %s)', 'digitalogic'), $min_php_version)); ?></span>
+                            <span style="color: green;">✓ <?php /* translators: %s: minimum supported PHP version. */ echo esc_html(sprintf(__('Supported (minimum %s)', 'digitalogic'), $min_php_version)); ?></span>
                         <?php else : ?>
-                            <span style="color: red;">✗ <?php echo esc_html(sprintf(__('Unsupported (minimum %s)', 'digitalogic'), $min_php_version)); ?></span>
+                            <span style="color: red;">✗ <?php /* translators: %s: minimum supported PHP version. */ echo esc_html(sprintf(__('Unsupported (minimum %s)', 'digitalogic'), $min_php_version)); ?></span>
                         <?php endif; ?>
                     </td>
                 </tr>

@@ -244,12 +244,12 @@ class Digitalogic_Product_Manager {
 			}
 			if ( ! empty( $result['query_failed'] ) || $expected !== $result['recordsFiltered']
 				|| count( $result['products'] ) !== min( 100, max( 0, $expected - ( $page - 1 ) * 100 ) ) ) {
-				return new WP_Error( 'digitalogic_catalog_incomplete', 'The catalog read was incomplete. Retry the request.', array( 'status' => 503 ) );
+				return new WP_Error( 'digitalogic_catalog_incomplete', __( 'The catalog read was incomplete. Retry the request.', 'digitalogic' ), array( 'status' => 503 ) );
 			}
 			foreach ( $result['products'] as $product ) {
 				$id = $product['id'] ?? 0;
 				if ( ! $id || isset( $seen[ $id ] ) ) {
-					return new WP_Error( 'digitalogic_catalog_incomplete', 'The catalog changed during the read. Retry the request.', array( 'status' => 503 ) );
+					return new WP_Error( 'digitalogic_catalog_incomplete', __( 'The catalog changed during the read. Retry the request.', 'digitalogic' ), array( 'status' => 503 ) );
 				}
 				$seen[ $id ] = true;
 				$products[]  = $product;

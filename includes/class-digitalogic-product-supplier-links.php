@@ -216,7 +216,7 @@ final class Digitalogic_Product_Supplier_Links {
 		if ( ! preg_match( '/^sl_[a-f0-9]{20}$/', $link_id ) ) {
 			return new WP_Error(
 				'digitalogic_supplier_link_id_invalid',
-				'شناسه لینک تأمین‌کننده معتبر نیست.',
+				__( 'شناسه لینک تأمین‌کننده معتبر نیست.', 'digitalogic' ),
 				array( 'status' => 400 )
 			);
 		}
@@ -238,7 +238,7 @@ final class Digitalogic_Product_Supplier_Links {
 		if ( count( $remaining ) === count( $links ) ) {
 			return new WP_Error(
 				'digitalogic_supplier_link_not_found',
-				'لینک تأمین‌کننده پیدا نشد.',
+				__( 'لینک تأمین‌کننده پیدا نشد.', 'digitalogic' ),
 				array( 'status' => 404 )
 			);
 		}
@@ -354,14 +354,14 @@ final class Digitalogic_Product_Supplier_Links {
 		if ( ! is_array( $raw_links ) ) {
 			return new WP_Error(
 				'digitalogic_supplier_links_invalid',
-				'فهرست لینک‌های تأمین‌کننده معتبر نیست.',
+				__( 'فهرست لینک‌های تأمین‌کننده معتبر نیست.', 'digitalogic' ),
 				array( 'status' => 400 )
 			);
 		}
 		if ( count( $raw_links ) > self::MAX_LINKS ) {
 			return new WP_Error(
 				'digitalogic_supplier_links_limit',
-				'تعداد لینک‌های تأمین‌کننده از حد مجاز بیشتر است.',
+				__( 'تعداد لینک‌های تأمین‌کننده از حد مجاز بیشتر است.', 'digitalogic' ),
 				array(
 					'status'  => 400,
 					'maximum' => self::MAX_LINKS,
@@ -424,7 +424,7 @@ final class Digitalogic_Product_Supplier_Links {
 		if ( ! is_array( $raw_link ) ) {
 			return new WP_Error(
 				'digitalogic_supplier_link_invalid',
-				'یکی از لینک‌های تأمین‌کننده معتبر نیست.',
+				__( 'یکی از لینک‌های تأمین‌کننده معتبر نیست.', 'digitalogic' ),
 				array( 'status' => 400 )
 			);
 		}
@@ -441,7 +441,7 @@ final class Digitalogic_Product_Supplier_Links {
 		if ( ! in_array( $marketplace, $this->marketplaces(), true ) ) {
 			return new WP_Error(
 				'digitalogic_supplier_marketplace_invalid',
-				'نوع بازار یا پلتفرم معتبر نیست.',
+				__( 'نوع بازار یا پلتفرم معتبر نیست.', 'digitalogic' ),
 				array( 'status' => 400 )
 			);
 		}
@@ -474,7 +474,7 @@ final class Digitalogic_Product_Supplier_Links {
 		if ( ! in_array( $relationship, $this->relationships(), true ) ) {
 			return new WP_Error(
 				'digitalogic_supplier_relationship_invalid',
-				'نوع ارتباط منبع معتبر نیست.',
+				__( 'نوع ارتباط منبع معتبر نیست.', 'digitalogic' ),
 				array( 'status' => 400 )
 			);
 		}
@@ -624,7 +624,7 @@ final class Digitalogic_Product_Supplier_Links {
 		if ( $product_id < 1 || 'product' !== get_post_type( $product_id ) ) {
 			return new WP_Error(
 				'digitalogic_supplier_links_parent_product_required',
-				'لینک تأمین‌کننده باید به محصول اصلی ووکامرس متصل شود، نه تنوع محصول.',
+				__( 'لینک تأمین‌کننده باید به محصول اصلی ووکامرس متصل شود، نه تنوع محصول.', 'digitalogic' ),
 				array( 'status' => 400 )
 			);
 		}
@@ -718,7 +718,7 @@ final class Digitalogic_Product_Supplier_Links {
 	private function url_error() {
 		return new WP_Error(
 			'digitalogic_supplier_link_url_invalid',
-			'نشانی اینترنتی تأمین‌کننده معتبر نیست.',
+			__( 'نشانی اینترنتی تأمین‌کننده معتبر نیست.', 'digitalogic' ),
 			array( 'status' => 400 )
 		);
 	}
@@ -731,7 +731,7 @@ final class Digitalogic_Product_Supplier_Links {
 	private function storage_error() {
 		return new WP_Error(
 			'digitalogic_supplier_links_storage_failed',
-			'ذخیره لینک‌های تأمین‌کننده کامل نشد. دوباره تلاش کنید.',
+			__( 'ذخیره لینک‌های تأمین‌کننده کامل نشد. دوباره تلاش کنید.', 'digitalogic' ),
 			array(
 				'status'    => 503,
 				'retryable' => true,
@@ -748,7 +748,7 @@ final class Digitalogic_Product_Supplier_Links {
 	private function duplicate_id_error( $index ) {
 		return new WP_Error(
 			'digitalogic_supplier_link_id_duplicate',
-			'شناسه لینک تأمین‌کننده تکراری است.',
+			__( 'شناسه لینک تأمین‌کننده تکراری است.', 'digitalogic' ),
 			array(
 				'status' => 400,
 				'index'  => (int) $index,

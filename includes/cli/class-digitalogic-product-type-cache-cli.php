@@ -167,7 +167,7 @@ class Digitalogic_Product_Type_Cache_CLI {
 		$allowed = array( 'apply', 'dataset', 'max-candidates', 'source-id' );
 		foreach ( array_keys( (array) $assoc_args ) as $key ) {
 			if ( ! in_array( (string) $key, $allowed, true ) ) {
-				return new WP_Error( 'digitalogic_product_type_cache_argument', 'Unknown command argument.' );
+				return new WP_Error( 'digitalogic_product_type_cache_argument', __( 'Unknown command argument.', 'digitalogic' ) );
 			}
 		}
 
@@ -175,21 +175,21 @@ class Digitalogic_Product_Type_Cache_CLI {
 		$source_id = isset( $assoc_args['source-id'] ) ? trim( (string) $assoc_args['source-id'] ) : '';
 		$dataset   = isset( $assoc_args['dataset'] ) ? trim( (string) $assoc_args['dataset'] ) : '';
 		if ( ( '' === $source_id ) !== ( '' === $dataset ) ) {
-			return new WP_Error( 'digitalogic_product_type_cache_scope', 'Specify both --source-id and --dataset, or neither.' );
+			return new WP_Error( 'digitalogic_product_type_cache_scope', __( 'Specify both --source-id and --dataset, or neither.', 'digitalogic' ) );
 		}
 		if ( $apply && ( '' === $source_id || '' === $dataset ) ) {
-			return new WP_Error( 'digitalogic_product_type_cache_scope', 'An exact --source-id and --dataset are required with --apply.' );
+			return new WP_Error( 'digitalogic_product_type_cache_scope', __( 'An exact --source-id and --dataset are required with --apply.', 'digitalogic' ) );
 		}
 
 		$maximum = self::MAX_CANDIDATES;
 		if ( isset( $assoc_args['max-candidates'] ) ) {
 			$value = (string) $assoc_args['max-candidates'];
 			if ( ! preg_match( '/^(0|[1-9][0-9]*)$/D', $value ) || (int) $value > self::MAX_CANDIDATES ) {
-				return new WP_Error( 'digitalogic_product_type_cache_limit', '--max-candidates must be a canonical integer from 0 through 100.' );
+				return new WP_Error( 'digitalogic_product_type_cache_limit', __( '--max-candidates must be a canonical integer from 0 through 100.', 'digitalogic' ) );
 			}
 			$maximum = (int) $value;
 		} elseif ( $apply ) {
-			return new WP_Error( 'digitalogic_product_type_cache_limit', '--max-candidates is required with --apply.' );
+			return new WP_Error( 'digitalogic_product_type_cache_limit', __( '--max-candidates is required with --apply.', 'digitalogic' ) );
 		}
 
 		return array(
@@ -228,10 +228,10 @@ class Digitalogic_Product_Type_Cache_CLI {
 	 */
 	private function report_candidates( $report, $parsed ) {
 		if ( 'current' !== (string) ( $report['status'] ?? '' ) || ! is_array( $report['source'] ?? null ) ) {
-			return new WP_Error( 'digitalogic_product_type_cache_report', 'The current source report is unavailable.' );
+			return new WP_Error( 'digitalogic_product_type_cache_report', __( 'The current source report is unavailable.', 'digitalogic' ) );
 		}
 		if ( ! empty( $report['limits']['source_truncated'] ) || ! empty( $report['limits']['woocommerce_truncated'] ) ) {
-			return new WP_Error( 'digitalogic_product_type_cache_report', 'The current source report is truncated.' );
+			return new WP_Error( 'digitalogic_product_type_cache_report', __( 'The current source report is truncated.', 'digitalogic' ) );
 		}
 		if (
 			'' !== $parsed['source_id']
@@ -240,7 +240,7 @@ class Digitalogic_Product_Type_Cache_CLI {
 				|| (string) ( $report['source']['dataset'] ?? '' ) !== $parsed['dataset']
 			)
 		) {
-			return new WP_Error( 'digitalogic_product_type_cache_scope', 'The rebuilt report does not match the asserted source scope.' );
+			return new WP_Error( 'digitalogic_product_type_cache_scope', __( 'The rebuilt report does not match the asserted source scope.', 'digitalogic' ) );
 		}
 
 		$warnings = $this->drift_warnings( $report );
@@ -248,7 +248,7 @@ class Digitalogic_Product_Type_Cache_CLI {
 			return $warnings;
 		}
 		if ( count( $warnings ) > $parsed['max_candidates'] ) {
-			return new WP_Error( 'digitalogic_product_type_cache_limit', 'The current candidate count exceeds --max-candidates; no cache was changed.' );
+			return new WP_Error( 'digitalogic_product_type_cache_limit', __( 'The current candidate count exceeds --max-candidates; no cache was changed.', 'digitalogic' ) );
 		}
 
 		return $warnings;
@@ -264,7 +264,7 @@ class Digitalogic_Product_Type_Cache_CLI {
 		$candidates = array();
 		foreach ( (array) ( $report['integrity']['warnings'] ?? array() ) as $warning ) {
 			if ( ! is_array( $warning ) || 'product_type_cache_drift' !== (string) ( $warning['code'] ?? '' ) ) {
-				return new WP_Error( 'digitalogic_product_type_cache_integrity', 'The report contains an unrelated integrity warning; no cache was changed.' );
+				return new WP_Error( 'digitalogic_product_type_cache_integrity', __( 'The report contains an unrelated integrity warning; no cache was changed.', 'digitalogic' ) );
 			}
 			$product_id = absint( $warning['woocommerce_id'] ?? 0 );
 			if (
@@ -273,7 +273,7 @@ class Digitalogic_Product_Type_Cache_CLI {
 				|| 'simple' !== (string) ( $warning['object_type'] ?? '' )
 				|| isset( $candidates[ $product_id ] )
 			) {
-				return new WP_Error( 'digitalogic_product_type_cache_integrity', 'The cache-drift warning shape is unsupported or ambiguous; no cache was changed.' );
+				return new WP_Error( 'digitalogic_product_type_cache_integrity', __( 'The cache-drift warning shape is unsupported or ambiguous; no cache was changed.', 'digitalogic' ) );
 			}
 			$candidates[ $product_id ] = $warning;
 		}
@@ -291,12 +291,12 @@ class Digitalogic_Product_Type_Cache_CLI {
 	private function validate_candidate( $candidate ) {
 		$product_id = (int) $candidate['woocommerce_id'];
 		if ( 'product' !== $this->read_post_type( $product_id ) ) {
-			return new WP_Error( 'digitalogic_product_type_cache_candidate', 'A candidate is not a current WooCommerce product; no cache was changed.' );
+			return new WP_Error( 'digitalogic_product_type_cache_candidate', __( 'A candidate is not a current WooCommerce product; no cache was changed.', 'digitalogic' ) );
 		}
 
 		$product = $this->read_product( $product_id );
 		if ( ! $product instanceof WC_Product || 'simple' !== (string) $product->get_type() ) {
-			return new WP_Error( 'digitalogic_product_type_cache_candidate', 'A candidate factory class changed since the report; no cache was changed.' );
+			return new WP_Error( 'digitalogic_product_type_cache_candidate', __( 'A candidate factory class changed since the report; no cache was changed.', 'digitalogic' ) );
 		}
 
 		$durable = $this->read_durable_product_type( $product_id );
@@ -339,7 +339,7 @@ class Digitalogic_Product_Type_Cache_CLI {
 			|| is_wp_error( $variations )
 			|| $item['variation_ids'] !== $variations
 		) {
-			return new WP_Error( 'digitalogic_product_type_cache_readback', 'Factory, taxonomy, or variation readback failed after cache-prefix invalidation.' );
+			return new WP_Error( 'digitalogic_product_type_cache_readback', __( 'Factory, taxonomy, or variation readback failed after cache-prefix invalidation.', 'digitalogic' ) );
 		}
 
 		$item['after'] = array(
@@ -387,7 +387,7 @@ class Digitalogic_Product_Type_Cache_CLI {
 			)
 		);
 		if ( is_wp_error( $terms ) ) {
-			return new WP_Error( 'digitalogic_product_type_cache_taxonomy', 'The durable product-type taxonomy could not be read; no cache was changed.' );
+			return new WP_Error( 'digitalogic_product_type_cache_taxonomy', __( 'The durable product-type taxonomy could not be read; no cache was changed.', 'digitalogic' ) );
 		}
 
 		$types = array();
@@ -400,7 +400,7 @@ class Digitalogic_Product_Type_Cache_CLI {
 		$types = array_keys( $types );
 		sort( $types, SORT_STRING );
 		if ( array( 'variable' ) !== $types ) {
-			return new WP_Error( 'digitalogic_product_type_cache_taxonomy', 'A candidate no longer has exactly one durable variable product-type term; no cache was changed.' );
+			return new WP_Error( 'digitalogic_product_type_cache_taxonomy', __( 'A candidate no longer has exactly one durable variable product-type term; no cache was changed.', 'digitalogic' ) );
 		}
 
 		return 'variable';
@@ -429,7 +429,7 @@ class Digitalogic_Product_Type_Cache_CLI {
 		$ids = array_values( array_unique( array_map( 'absint', (array) $ids ) ) );
 		sort( $ids, SORT_NUMERIC );
 		if ( empty( $ids ) || count( $ids ) > self::MAX_VARIATIONS_PER_PARENT ) {
-			return new WP_Error( 'digitalogic_product_type_cache_variations', 'A candidate has no variation or exceeds the bounded variation readback; no cache was changed.' );
+			return new WP_Error( 'digitalogic_product_type_cache_variations', __( 'A candidate has no variation or exceeds the bounded variation readback; no cache was changed.', 'digitalogic' ) );
 		}
 
 		return $ids;
@@ -443,7 +443,7 @@ class Digitalogic_Product_Type_Cache_CLI {
 	 */
 	protected function invalidate_product_cache_prefix( $product_id ) {
 		if ( ! is_callable( array( 'WC_Cache_Helper', 'invalidate_cache_group' ) ) ) {
-			return new WP_Error( 'digitalogic_product_type_cache_unavailable', 'WooCommerce cache-prefix invalidation is unavailable.' );
+			return new WP_Error( 'digitalogic_product_type_cache_unavailable', __( 'WooCommerce cache-prefix invalidation is unavailable.', 'digitalogic' ) );
 		}
 
 		$instance_cache = $this->remove_product_instance_cache( $product_id );
@@ -478,13 +478,13 @@ class Digitalogic_Product_Type_Cache_CLI {
 		try {
 			$cache = wc_get_container()->get( $class );
 			if ( ! is_object( $cache ) || ! is_callable( array( $cache, 'remove' ) ) ) {
-				return new WP_Error( 'digitalogic_product_type_cache_unavailable', 'WooCommerce product-object cache invalidation is unavailable.' );
+				return new WP_Error( 'digitalogic_product_type_cache_unavailable', __( 'WooCommerce product-object cache invalidation is unavailable.', 'digitalogic' ) );
 			}
 			$cache->remove( (int) $product_id );
 		} catch ( Throwable $error ) {
 			unset( $error );
 
-			return new WP_Error( 'digitalogic_product_type_cache_unavailable', 'WooCommerce product-object cache invalidation failed.' );
+			return new WP_Error( 'digitalogic_product_type_cache_unavailable', __( 'WooCommerce product-object cache invalidation failed.', 'digitalogic' ) );
 		}
 
 		return true;

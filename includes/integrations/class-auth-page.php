@@ -652,7 +652,7 @@ final class Digitalogic_Plugin_Auth_Routes {
 		$logged_out = 'true' === sanitize_key( wp_unslash( $_GET['loggedout'] ?? '' ) ) && ! is_user_logged_in();
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 		Digitalogic_Auth_Realtime::bind_browser();
-		login_header( __( 'Log In' ) );
+		login_header( __( 'Log In' ) ); // phpcs:ignore WordPress.WP.I18n.MissingArgDomain -- Intentionally reuses the WordPress core translation.
 
         if (isset($_GET['login']) && sanitize_key(wp_unslash($_GET['login'])) === 'failed') {
             echo '<div id="login_error" class="notice notice-error"><p>';
@@ -720,7 +720,7 @@ final class Digitalogic_Plugin_Auth_Routes {
         if (function_exists('digits_render_new_form')) {
             $details = [
                 'page_type' => 'login',
-                'login_title' => __('Log In'),
+                'login_title' => __('Log In'), // phpcs:ignore WordPress.WP.I18n.MissingArgDomain -- Intentionally reuses the WordPress core translation.
                 'login_details' => [
                     'dig_login_email' => 1,
                     'dig_login_mobilenumber' => 1,
@@ -814,7 +814,7 @@ final class Digitalogic_Plugin_Auth_Routes {
 				'login_footer',
 				static function (): void {
 					echo '<div class="dg-toast-stack"><div class="dg-toast dg-toast--success" data-dg-toast-on-load>';
-					echo '<p class="dg-toast__message" role="status">' . esc_html__( 'You are now logged out.' ) . '</p>';
+					echo '<p class="dg-toast__message" role="status">' . esc_html__( 'You are now logged out.' ) . '</p>'; // phpcs:ignore WordPress.WP.I18n.MissingArgDomain -- Intentionally reuses the WordPress core translation.
 					echo '</div></div>';
 				}
 			);
@@ -960,7 +960,7 @@ final class Digitalogic_Plugin_Auth_Routes {
         if (!wp_check_password($password, $phone_user->user_pass, $phone_user->ID)) {
             return new WP_Error(
                 'incorrect_password',
-                __('<strong>Error:</strong> The password you entered for the phone number is incorrect.')
+                __('<strong>Error:</strong> The password you entered for the phone number is incorrect.') // phpcs:ignore WordPress.WP.I18n.MissingArgDomain -- Intentionally reuses the WordPress core translation.
             );
         }
 

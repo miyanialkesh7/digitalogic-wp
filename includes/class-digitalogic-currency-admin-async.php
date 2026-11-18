@@ -327,7 +327,7 @@ final class Digitalogic_Currency_Admin_Async {
 			$this->report_issue(
 				new WP_Error(
 					'digitalogic_currency_async_acf_revision_missing',
-					'این فرم قیمت به وضعیت مشخصی متصل نبود؛ برای جلوگیری از بازگرداندن نرخ جدیدتر، صفحه را تازه‌سازی و دوباره ذخیره کنید.',
+					__( 'این فرم قیمت به وضعیت مشخصی متصل نبود؛ برای جلوگیری از بازگرداندن نرخ جدیدتر، صفحه را تازه‌سازی و دوباره ذخیره کنید.', 'digitalogic' ),
 					array( 'blocking' => true )
 				),
 				'acf_revision_refresh'
@@ -377,7 +377,7 @@ final class Digitalogic_Currency_Admin_Async {
 		if ( '' === $expected_revision ) {
 			$error = new WP_Error(
 				'digitalogic_currency_async_acf_revision_missing',
-				'این فرم قیمت به وضعیت مشخصی متصل نبود؛ صفحه را تازه‌سازی و دوباره ذخیره کنید.',
+				__( 'این فرم قیمت به وضعیت مشخصی متصل نبود؛ صفحه را تازه‌سازی و دوباره ذخیره کنید.', 'digitalogic' ),
 				array( 'blocking' => true )
 			);
 			$this->report_issue( $error, 'acf_option_fail_safe' );
@@ -442,7 +442,7 @@ final class Digitalogic_Currency_Admin_Async {
 	/** Admit explicit settings fields through the existing durable owner queue. */
 	public function enqueue_settings( array $values, $dispatch = true, $reconcile = false, $expected_revision = '', $source = 'admin', $request_id = '', $execution_mode = 'async' ) {
 		if ( $reconcile ) {
-			return new WP_Error( 'digitalogic_settings_async_mode_invalid', 'Settings intent cannot request currency-only recalculation.', array( 'status' => 400 ) );
+			return new WP_Error( 'digitalogic_settings_async_mode_invalid', __( 'Settings intent cannot request currency-only recalculation.', 'digitalogic' ), array( 'status' => 400 ) );
 		}
 		return $this->enqueue_owner_intent( $values, $dispatch, false, $expected_revision, $source, $request_id, $execution_mode, true );
 	}
@@ -456,7 +456,7 @@ final class Digitalogic_Currency_Admin_Async {
 		if ( ! $values || array_diff( array_keys( $values ), $allowed ) ) {
 			return new WP_Error(
 				'digitalogic_currency_async_fields_invalid',
-				'حداقل یکی از نرخ‌های دلار یا یوآن باید ارسال شود.',
+				__( 'حداقل یکی از نرخ‌های دلار یا یوآن باید ارسال شود.', 'digitalogic' ),
 				array( 'blocking' => true )
 			);
 		}
@@ -470,7 +470,7 @@ final class Digitalogic_Currency_Admin_Async {
 				if ( ( ! is_string( $raw_value ) && ! is_int( $raw_value ) && ! is_float( $raw_value ) )
 					|| ( is_string( $raw_value ) && '' === trim( $raw_value ) )
 					|| ( is_float( $raw_value ) && ! is_finite( $raw_value ) ) ) {
-					return new WP_Error( 'digitalogic_settings_async_value_invalid', 'Settings intent values must be nonempty scalar values.', array( 'status' => 400, 'field' => $field ) );
+					return new WP_Error( 'digitalogic_settings_async_value_invalid', __( 'Settings intent values must be nonempty scalar values.', 'digitalogic' ), array( 'status' => 400, 'field' => $field ) );
 				}
 				$desired[ $field ] = is_string( $raw_value ) ? trim( $raw_value ) : $raw_value;
 				continue;
@@ -480,7 +480,7 @@ final class Digitalogic_Currency_Admin_Async {
 				if ( null === $date ) {
 					return new WP_Error(
 						'digitalogic_currency_async_effective_date_invalid',
-						'تاریخ مؤثر نرخ معتبر نیست.',
+						__( 'تاریخ مؤثر نرخ معتبر نیست.', 'digitalogic' ),
 						array(
 							'blocking' => true,
 							'field'    => $field,
@@ -495,7 +495,7 @@ final class Digitalogic_Currency_Admin_Async {
 			if ( 1 !== preg_match( '/\A[1-9][0-9]{0,9}\z/D', $value ) ) {
 				return new WP_Error(
 					'digitalogic_currency_async_value_invalid',
-					'نرخ ارز معتبر نیست.',
+					__( 'نرخ ارز معتبر نیست.', 'digitalogic' ),
 					array(
 						'blocking' => true,
 						'field'    => $field,
@@ -508,7 +508,7 @@ final class Digitalogic_Currency_Admin_Async {
 		if ( ! is_string( $expected_revision ) || '' === $expected_revision ) {
 			return new WP_Error(
 				'digitalogic_currency_async_expected_revision_required',
-				'پیش از تغییر نرخ، وضعیت فعلی قیمت را تازه‌سازی کنید.',
+				__( 'پیش از تغییر نرخ، وضعیت فعلی قیمت را تازه‌سازی کنید.', 'digitalogic' ),
 				array(
 					'status'   => 428,
 					'blocking' => true,
@@ -518,7 +518,7 @@ final class Digitalogic_Currency_Admin_Async {
 		if ( 1 !== preg_match( '/\Asha256:[a-f0-9]{64}\z/D', $expected_revision ) ) {
 			return new WP_Error(
 				'digitalogic_currency_async_expected_revision_invalid',
-				'شناسهٔ وضعیت قیمت معتبر نیست.',
+				__( 'شناسهٔ وضعیت قیمت معتبر نیست.', 'digitalogic' ),
 				array(
 					'status'   => 400,
 					'blocking' => true,
@@ -582,7 +582,7 @@ final class Digitalogic_Currency_Admin_Async {
 					}
 					return new WP_Error(
 						'digitalogic_currency_async_worker_still_running',
-						'اجرای قبلی از مهلت نمایش گذشته است اما هنوز آزاد نشده؛ درخواست جدید متوقف نشد و می‌توانید دوباره وضعیت را بررسی کنید.',
+						__( 'اجرای قبلی از مهلت نمایش گذشته است اما هنوز آزاد نشده؛ درخواست جدید متوقف نشد و می‌توانید دوباره وضعیت را بررسی کنید.', 'digitalogic' ),
 						array(
 							'blocking'    => false,
 							'retry_after' => 2,
@@ -604,7 +604,7 @@ final class Digitalogic_Currency_Admin_Async {
 					) {
 						return new WP_Error(
 							'digitalogic_currency_async_busy',
-							'یک تغییر نرخ هنوز در حال تکمیل است؛ وضعیت همان درخواست را دنبال کنید.',
+							__( 'یک تغییر نرخ هنوز در حال تکمیل است؛ وضعیت همان درخواست را دنبال کنید.', 'digitalogic' ),
 							array(
 								'blocking'    => false,
 								'retry_after' => 2,
@@ -628,7 +628,7 @@ final class Digitalogic_Currency_Admin_Async {
 				if ( Digitalogic_Pricing_Service::coordination_lock_is_held() ) {
 					return new WP_Error(
 						'digitalogic_pricing_sync_busy',
-						'تراکنش قیمت دیگری هنوز در حال اجرا است؛ پس از آزاد شدن همان تراکنش دوباره تلاش کنید.',
+						__( 'تراکنش قیمت دیگری هنوز در حال اجرا است؛ پس از آزاد شدن همان تراکنش دوباره تلاش کنید.', 'digitalogic' ),
 						array(
 							'blocking'    => false,
 							'retry_after' => 5,
@@ -644,7 +644,7 @@ final class Digitalogic_Currency_Admin_Async {
 				if ( ! hash_equals( $expected_revision, (string) $state['state_revision'] ) ) {
 					return new WP_Error(
 						'digitalogic_currency_async_state_revision_conflict',
-						'تنظیمات قیمت پس از باز شدن صفحه تغییر کرده است؛ صفحه را تازه‌سازی کنید.',
+						__( 'تنظیمات قیمت پس از باز شدن صفحه تغییر کرده است؛ صفحه را تازه‌سازی کنید.', 'digitalogic' ),
 						array(
 							'blocking'               => true,
 							'current_state_revision' => (string) $state['state_revision'],
@@ -699,7 +699,7 @@ final class Digitalogic_Currency_Admin_Async {
 				if ( $reconcile && $mismatch ) {
 					return new WP_Error(
 						'digitalogic_currency_async_reconcile_rate_mismatch',
-						'بازمحاسبهٔ ایمن فقط با نرخ تأییدشدهٔ فعلی مجاز است.',
+						__( 'بازمحاسبهٔ ایمن فقط با نرخ تأییدشدهٔ فعلی مجاز است.', 'digitalogic' ),
 						array( 'blocking' => true )
 					);
 				}
@@ -851,7 +851,7 @@ final class Digitalogic_Currency_Admin_Async {
 		) {
 			return new WP_Error(
 				'digitalogic_currency_cli_owner_conflict',
-				'یک کار نرخ دیگر مالک این نسل است؛ وضعیت همان کار را بررسی کنید.',
+				__( 'یک کار نرخ دیگر مالک این نسل است؛ وضعیت همان کار را بررسی کنید.', 'digitalogic' ),
 				array( 'blocking' => false )
 			);
 		}
@@ -1030,7 +1030,7 @@ final class Digitalogic_Currency_Admin_Async {
 		} catch ( Throwable $exception ) {
 			$apply = new WP_Error(
 				'digitalogic_currency_async_unexpected_failure',
-				'اجرای پس‌زمینه نرخ به‌طور غیرمنتظره متوقف شد.',
+				__( 'اجرای پس‌زمینه نرخ به‌طور غیرمنتظره متوقف شد.', 'digitalogic' ),
 				array(
 					'blocking'  => true,
 					'exception' => get_class( $exception ),
@@ -1770,7 +1770,7 @@ final class Digitalogic_Currency_Admin_Async {
 				? $request_id
 				: new WP_Error(
 					'digitalogic_currency_async_request_id_required',
-					'شناسهٔ درخواست لازم است.',
+					__( 'شناسهٔ درخواست لازم است.', 'digitalogic' ),
 					array(
 						'status'   => 400,
 						'blocking' => true,
@@ -1785,7 +1785,7 @@ final class Digitalogic_Currency_Admin_Async {
 		if ( ! $alias ) {
 			return new WP_Error(
 				'digitalogic_currency_async_request_not_found',
-				'درخواستی با این شناسه پیدا نشد.',
+				__( 'درخواستی با این شناسه پیدا نشد.', 'digitalogic' ),
 				array(
 					'status'   => 404,
 					'blocking' => false,
@@ -1811,7 +1811,7 @@ final class Digitalogic_Currency_Admin_Async {
 		if ( ! $historical ) {
 			return new WP_Error(
 				'digitalogic_currency_async_request_history_incomplete',
-				'نتیجهٔ پایدار این درخواست در دسترس نیست.',
+				__( 'نتیجهٔ پایدار این درخواست در دسترس نیست.', 'digitalogic' ),
 				array(
 					'status'   => 409,
 					'blocking' => true,
@@ -1849,7 +1849,7 @@ final class Digitalogic_Currency_Admin_Async {
 		) {
 			return new WP_Error(
 				'digitalogic_currency_async_identity_invalid',
-				'شناسهٔ کامل کار یا شناسهٔ درخواست لازم است.',
+				__( 'شناسهٔ کامل کار یا شناسهٔ درخواست لازم است.', 'digitalogic' ),
 				array(
 					'status'   => 400,
 					'blocking' => true,
@@ -1865,7 +1865,7 @@ final class Digitalogic_Currency_Admin_Async {
 					if ( ! $alias ) {
 						return new WP_Error(
 							'digitalogic_currency_async_request_not_found',
-							'درخواستی با این شناسه پیدا نشد.',
+							__( 'درخواستی با این شناسه پیدا نشد.', 'digitalogic' ),
 							array(
 								'status'   => 404,
 								'blocking' => false,
@@ -1883,7 +1883,7 @@ final class Digitalogic_Currency_Admin_Async {
 						}
 						return new WP_Error(
 							'digitalogic_currency_async_request_history_incomplete',
-							'نتیجهٔ پایدار این درخواست در دسترس نیست.',
+							__( 'نتیجهٔ پایدار این درخواست در دسترس نیست.', 'digitalogic' ),
 							array(
 								'status'   => 409,
 								'blocking' => true,
@@ -1893,7 +1893,7 @@ final class Digitalogic_Currency_Admin_Async {
 				} elseif ( ! $this->matches_job( $job, $expected_job_id, $expected_generation ) ) {
 					return new WP_Error(
 						'digitalogic_currency_async_superseded',
-						'این کار با نسل تازه‌تری جایگزین شده است.',
+						__( 'این کار با نسل تازه‌تری جایگزین شده است.', 'digitalogic' ),
 						array(
 							'status'   => 409,
 							'blocking' => false,
@@ -1905,7 +1905,7 @@ final class Digitalogic_Currency_Admin_Async {
 				if ( 1 === preg_match( '/\Asha256:[a-f0-9]{64}\z/D', $marker ) ) {
 					return new WP_Error(
 						'digitalogic_currency_async_cancel_too_late',
-						'اثر نرخ ثبت شده است و فقط انتشار نتیجهٔ همان اثر باید تکمیل شود.',
+						__( 'اثر نرخ ثبت شده است و فقط انتشار نتیجهٔ همان اثر باید تکمیل شود.', 'digitalogic' ),
 						array(
 							'status'   => 409,
 							'blocking' => false,
@@ -1922,7 +1922,7 @@ final class Digitalogic_Currency_Admin_Async {
 				if ( 'running' !== (string) ( $job['status'] ?? '' ) ) {
 					return new WP_Error(
 						'digitalogic_currency_async_cancel_unavailable',
-						'این کار در وضعیت قابل لغو نیست.',
+						__( 'این کار در وضعیت قابل لغو نیست.', 'digitalogic' ),
 						array(
 							'status'   => 409,
 							'blocking' => false,
@@ -2471,14 +2471,14 @@ final class Digitalogic_Currency_Admin_Async {
 		) {
 			return new WP_Error(
 				'digitalogic_currency_async_claim_lost',
-				'مالکیت یا مهلت کار قیمت پیش از ثبت از دست رفت.',
+				__( 'مالکیت یا مهلت کار قیمت پیش از ثبت از دست رفت.', 'digitalogic' ),
 				array( 'blocking' => true )
 			);
 		}
 		if ( $this->is_cli_sync_job( $job ) && (int) ( $job['deadline_at'] ?? 0 ) <= $now ) {
 			return new WP_Error(
 				'digitalogic_currency_cli_deadline_exceeded',
-				'مهلت ۶۰ ثانیه‌ای اجرای قیمت پایان یافت؛ تراکنش پیش از ثبت نهایی متوقف می‌شود.',
+				__( 'مهلت ۶۰ ثانیه‌ای اجرای قیمت پایان یافت؛ تراکنش پیش از ثبت نهایی متوقف می‌شود.', 'digitalogic' ),
 				array( 'blocking' => true )
 			);
 		}
@@ -2491,14 +2491,14 @@ final class Digitalogic_Currency_Admin_Async {
 		if ( $expired_lease || (int) ( $job['deadline_at'] ?? 0 ) < $now ) {
 			return new WP_Error(
 				'digitalogic_currency_async_claim_lost',
-				'مالکیت یا مهلت کار قیمت پیش از ثبت از دست رفت.',
+				__( 'مالکیت یا مهلت کار قیمت پیش از ثبت از دست رفت.', 'digitalogic' ),
 				array( 'blocking' => true )
 			);
 		}
 		if ( ! empty( $job['cancel_requested'] ) ) {
 			return new WP_Error(
 				'digitalogic_currency_async_cancel_requested',
-				'درخواست لغو پیش از ثبت اثر پذیرفته شد.',
+				__( 'درخواست لغو پیش از ثبت اثر پذیرفته شد.', 'digitalogic' ),
 				array( 'blocking' => false )
 			);
 		}
@@ -2512,7 +2512,7 @@ final class Digitalogic_Currency_Admin_Async {
 		if ( 1 !== preg_match( '/\Asha256:[a-f0-9]{64}\z/D', $state_revision ) ) {
 			return new WP_Error(
 				'digitalogic_currency_async_commit_marker_invalid',
-				'نشانگر نتیجهٔ نهایی worker معتبر نیست.',
+				__( 'نشانگر نتیجهٔ نهایی worker معتبر نیست.', 'digitalogic' ),
 				array( 'blocking' => true )
 			);
 		}
@@ -2522,7 +2522,7 @@ final class Digitalogic_Currency_Admin_Async {
 		if ( ! $publication ) {
 			return new WP_Error(
 				'digitalogic_currency_async_publication_marker_invalid',
-				'اطلاعات بازیابی پس از ثبت worker معتبر نیست.',
+				__( 'اطلاعات بازیابی پس از ثبت worker معتبر نیست.', 'digitalogic' ),
 				array( 'blocking' => true )
 			);
 		}
@@ -2567,7 +2567,7 @@ final class Digitalogic_Currency_Admin_Async {
 		if ( 1 !== (int) $updated ) {
 			return new WP_Error(
 				'digitalogic_currency_async_commit_marker_store_failed',
-				'ثبت نشانگر نهایی worker ممکن نشد.',
+				__( 'ثبت نشانگر نهایی worker ممکن نشد.', 'digitalogic' ),
 				array( 'blocking' => true )
 			);
 		}
@@ -2592,7 +2592,7 @@ final class Digitalogic_Currency_Admin_Async {
 		if ( 1 !== (int) $acquired ) {
 			return new WP_Error(
 				'digitalogic_currency_async_job_lock_busy',
-				'کارگر قیمت در حال تکمیل یک درخواست است؛ کمی بعد دوباره تلاش کنید.',
+				__( 'کارگر قیمت در حال تکمیل یک درخواست است؛ کمی بعد دوباره تلاش کنید.', 'digitalogic' ),
 				array(
 					'blocking'    => false,
 					'retry_after' => 2,
@@ -2689,7 +2689,7 @@ final class Digitalogic_Currency_Admin_Async {
 		) {
 			return new WP_Error(
 				'digitalogic_currency_async_store_unavailable',
-				'ذخیرهٔ اتمیک وضعیت کار پس‌زمینه در دسترس نیست.',
+				__( 'ذخیرهٔ اتمیک وضعیت کار پس‌زمینه در دسترس نیست.', 'digitalogic' ),
 				array( 'blocking' => true )
 			);
 		}
@@ -2725,7 +2725,7 @@ final class Digitalogic_Currency_Admin_Async {
 		if ( $verified !== $job ) {
 			return new WP_Error(
 				'digitalogic_currency_async_store_failed',
-				'ثبت وضعیت کار پس‌زمینه ممکن نشد.',
+				__( 'ثبت وضعیت کار پس‌زمینه ممکن نشد.', 'digitalogic' ),
 				array( 'blocking' => true )
 			);
 		}
@@ -2737,7 +2737,7 @@ final class Digitalogic_Currency_Admin_Async {
 	private function job_cas_conflict() {
 		return new WP_Error(
 			'digitalogic_currency_async_job_cas_conflict',
-			'وضعیت کار قیمت هم‌زمان تغییر کرد؛ نتیجهٔ جدیدتر حفظ شد و کار دوباره بررسی می‌شود.',
+			__( 'وضعیت کار قیمت هم‌زمان تغییر کرد؛ نتیجهٔ جدیدتر حفظ شد و کار دوباره بررسی می‌شود.', 'digitalogic' ),
 			array(
 				'blocking'    => false,
 				'retry_after' => 1,
@@ -2828,7 +2828,7 @@ final class Digitalogic_Currency_Admin_Async {
 		if ( ! $this->same_generation( $current, $job ) ) {
 			return new WP_Error(
 				'digitalogic_currency_async_job_cas_conflict',
-				'وضعیت کار هم‌زمان تغییر کرد؛ نتیجهٔ جدیدتر حفظ شد.',
+				__( 'وضعیت کار هم‌زمان تغییر کرد؛ نتیجهٔ جدیدتر حفظ شد.', 'digitalogic' ),
 				array(
 					'status'      => 409,
 					'blocking'    => false,
@@ -2839,7 +2839,7 @@ final class Digitalogic_Currency_Admin_Async {
 		if ( 1 === preg_match( '/\Asha256:[a-f0-9]{64}\z/D', (string) ( $current['effect_state_revision'] ?? '' ) ) ) {
 			return new WP_Error(
 				'digitalogic_currency_async_cancel_too_late',
-				'اثر نرخ ثبت شده است و قابل لغو نیست.',
+				__( 'اثر نرخ ثبت شده است و قابل لغو نیست.', 'digitalogic' ),
 				array(
 					'status'   => 409,
 					'blocking' => false,
@@ -2887,7 +2887,7 @@ final class Digitalogic_Currency_Admin_Async {
 		if ( ! hash_equals( (string) ( $alias['fingerprint'] ?? '' ), (string) $request_fingerprint ) ) {
 			return new WP_Error(
 				'digitalogic_currency_async_request_id_conflict',
-				'این شناسهٔ درخواست قبلاً برای تغییر دیگری استفاده شده است.',
+				__( 'این شناسهٔ درخواست قبلاً برای تغییر دیگری استفاده شده است.', 'digitalogic' ),
 				array(
 					'status'   => 409,
 					'blocking' => true,
@@ -2902,7 +2902,7 @@ final class Digitalogic_Currency_Admin_Async {
 		if ( ! $result ) {
 			return new WP_Error(
 				'digitalogic_currency_async_request_history_incomplete',
-				'نتیجهٔ پایدار این درخواست در دسترس نیست.',
+				__( 'نتیجهٔ پایدار این درخواست در دسترس نیست.', 'digitalogic' ),
 				array(
 					'status'   => 409,
 					'blocking' => true,
@@ -3026,7 +3026,7 @@ final class Digitalogic_Currency_Admin_Async {
 	private function verify_settings_intent_readback( array $job, array $settings ) {
 		$desired = (array) ( $job['desired_fields'] ?? array() );
 		if ( ! $desired ) {
-			return new WP_Error( 'digitalogic_settings_async_readback_invalid', 'Resolved settings intent is missing.', array( 'blocking' => true ) );
+			return new WP_Error( 'digitalogic_settings_async_readback_invalid', __( 'Resolved settings intent is missing.', 'digitalogic' ), array( 'blocking' => true ) );
 		}
 		$validated = Digitalogic_Pricing_Service::instance()->validate_settings_document( $settings );
 		if ( is_wp_error( $validated ) ) {
@@ -3034,7 +3034,7 @@ final class Digitalogic_Currency_Admin_Async {
 		}
 		foreach ( $desired as $field => $value ) {
 			if ( ! array_key_exists( $field, $validated ) || (string) $validated[ $field ] !== (string) $value ) {
-				return new WP_Error( 'digitalogic_settings_async_readback_mismatch', 'Committed settings do not match admitted fields.', array( 'blocking' => true, 'field' => $field ) );
+				return new WP_Error( 'digitalogic_settings_async_readback_mismatch', __( 'Committed settings do not match admitted fields.', 'digitalogic' ), array( 'blocking' => true, 'field' => $field ) );
 			}
 		}
 		return true;
@@ -3341,7 +3341,7 @@ final class Digitalogic_Currency_Admin_Async {
 		if ( 1 !== preg_match( '/\A[a-zA-Z0-9._:-]{8,128}\z/D', $request_id ) ) {
 			return new WP_Error(
 				'digitalogic_currency_async_request_id_invalid',
-				'شناسهٔ درخواست معتبر نیست.',
+				__( 'شناسهٔ درخواست معتبر نیست.', 'digitalogic' ),
 				array(
 					'status'   => 400,
 					'blocking' => true,

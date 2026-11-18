@@ -1143,10 +1143,10 @@ class Digitalogic_CLI_Commands {
 
 		$json = file_get_contents( $path, false, null, 0, self::MAX_CURRENT_PATRIS_JSON_BYTES + 1 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- A reviewed local CLI file is required and bounded.
 		if ( ! is_string( $json ) || '' === trim( $json ) ) {
-			return new WP_Error( 'digitalogic_patris_static_file_read_failed', 'The canonical kala.json could not be read or is empty.' );
+			return new WP_Error( 'digitalogic_patris_static_file_read_failed', __( 'The canonical kala.json could not be read or is empty.', 'digitalogic' ) );
 		}
 		if ( strlen( $json ) > self::MAX_CURRENT_PATRIS_JSON_BYTES ) {
-			return new WP_Error( 'digitalogic_patris_static_file_too_large', 'The canonical kala.json exceeds the 8 MiB inspection limit.' );
+			return new WP_Error( 'digitalogic_patris_static_file_too_large', __( 'The canonical kala.json exceeds the 8 MiB inspection limit.', 'digitalogic' ) );
 		}
 
 		return $json;
@@ -1193,24 +1193,24 @@ class Digitalogic_CLI_Commands {
 	 */
 	public static function validate_current_patris_json_path( $requested_path ) {
 		if ( ! is_string( $requested_path ) || '' === trim( $requested_path ) ) {
-			return new WP_Error( 'digitalogic_patris_inspect_file_required', 'Specify --file=<absolute-path-to-kala.json>.' );
+			return new WP_Error( 'digitalogic_patris_inspect_file_required', __( 'Specify --file=<absolute-path-to-kala.json>.', 'digitalogic' ) );
 		}
 		$requested_path = trim( $requested_path );
 		$is_absolute    = str_starts_with( $requested_path, '/' )
 			|| 1 === preg_match( '/^[A-Za-z]:[\\\\\/]/', $requested_path );
 		if ( ! $is_absolute ) {
-			return new WP_Error( 'digitalogic_patris_inspect_absolute_path_required', 'The canonical kala.json path must be absolute.' );
+			return new WP_Error( 'digitalogic_patris_inspect_absolute_path_required', __( 'The canonical kala.json path must be absolute.', 'digitalogic' ) );
 		}
 		if ( is_link( $requested_path ) ) {
-			return new WP_Error( 'digitalogic_patris_inspect_symlink_forbidden', 'The canonical kala.json must not be a symbolic link.' );
+			return new WP_Error( 'digitalogic_patris_inspect_symlink_forbidden', __( 'The canonical kala.json must not be a symbolic link.', 'digitalogic' ) );
 		}
 
 		$path = realpath( $requested_path );
 		if ( false === $path || ! is_file( $path ) || ! is_readable( $path ) ) {
-			return new WP_Error( 'digitalogic_patris_inspect_file_unreadable', 'The canonical kala.json is not a readable regular file.' );
+			return new WP_Error( 'digitalogic_patris_inspect_file_unreadable', __( 'The canonical kala.json is not a readable regular file.', 'digitalogic' ) );
 		}
 		if ( 'kala.json' !== strtolower( basename( $path ) ) ) {
-			return new WP_Error( 'digitalogic_patris_inspect_filename_invalid', 'The inspected file must be named kala.json.' );
+			return new WP_Error( 'digitalogic_patris_inspect_filename_invalid', __( 'The inspected file must be named kala.json.', 'digitalogic' ) );
 		}
 
 		$normalized_path      = self::normalize_cli_path( $path );
@@ -1225,16 +1225,16 @@ class Digitalogic_CLI_Commands {
 			str_starts_with( $compare_path . '/', $compare_root )
 			|| str_starts_with( $compare_requested . '/', $compare_root )
 		) {
-			return new WP_Error( 'digitalogic_patris_inspect_webroot_forbidden', 'The canonical kala.json must be stored outside the WordPress webroot.' );
+			return new WP_Error( 'digitalogic_patris_inspect_webroot_forbidden', __( 'The canonical kala.json must be stored outside the WordPress webroot.', 'digitalogic' ) );
 		}
 
 		clearstatcache( true, $path );
 		$size = filesize( $path );
 		if ( false === $size || $size <= 0 ) {
-			return new WP_Error( 'digitalogic_patris_inspect_file_empty', 'The canonical kala.json is empty.' );
+			return new WP_Error( 'digitalogic_patris_inspect_file_empty', __( 'The canonical kala.json is empty.', 'digitalogic' ) );
 		}
 		if ( $size > self::MAX_CURRENT_PATRIS_JSON_BYTES ) {
-			return new WP_Error( 'digitalogic_patris_inspect_file_too_large', 'The canonical kala.json exceeds the 8 MiB inspection limit.' );
+			return new WP_Error( 'digitalogic_patris_inspect_file_too_large', __( 'The canonical kala.json exceeds the 8 MiB inspection limit.', 'digitalogic' ) );
 		}
 
 		return $path;
@@ -2139,7 +2139,7 @@ class Digitalogic_CLI_Commands {
 		if ( 1 !== (int) $has_positional + (int) $has_id + (int) $has_sku ) {
 			return new WP_Error(
 				'digitalogic_cli_product_selector',
-				'Specify exactly one product selector: positional ID, --id, or --sku.'
+				__( 'Specify exactly one product selector: positional ID, --id, or --sku.', 'digitalogic' )
 			);
 		}
 

@@ -280,7 +280,7 @@ final class Digitalogic_Pricing_Snapshot {
 		// Website pricing does not require a consumer snapshot. Re-enable only
 		// after the working website prototype, as tracked in issue #296.
 		if ( ! self::CONSTRUCTION_ENABLED ) {
-			return new WP_Error( 'digitalogic_pricing_snapshot_disabled', 'Snapshot construction is temporarily disabled.', array( 'status' => 503 ) );
+			return new WP_Error( 'digitalogic_pricing_snapshot_disabled', __( 'Snapshot construction is temporarily disabled.', 'digitalogic' ), array( 'status' => 503 ) );
 		}
 
 		$payload = $this->validate_start_request( $request );
@@ -719,7 +719,7 @@ final class Digitalogic_Pricing_Snapshot {
 			if ( self::CONSTRUCTION_ENABLED ) {
 				$this->run_build_with_lease( $build_id );
 			} else {
-				$this->fail_job( $build_id, new WP_Error( 'digitalogic_pricing_snapshot_disabled', 'Snapshot construction is temporarily disabled.', array( 'status' => 503 ) ) );
+				$this->fail_job( $build_id, new WP_Error( 'digitalogic_pricing_snapshot_disabled', __( 'Snapshot construction is temporarily disabled.', 'digitalogic' ), array( 'status' => 503 ) ) );
 			}
 		} catch ( Throwable $error ) {
 			$this->record_worker_failure( $build_id, $this->worker_exception_error() );
@@ -1169,7 +1169,7 @@ final class Digitalogic_Pricing_Snapshot {
 			$this->schedule_state_revision_event_retry( $sources );
 			return new WP_Error(
 				'digitalogic_pricing_state_outbox_unavailable',
-				'ثبت صف پایدار رویداد وضعیت قیمت ممکن نشد.',
+				__( 'ثبت صف پایدار رویداد وضعیت قیمت ممکن نشد.', 'digitalogic' ),
 				array(
 					'blocking'    => false,
 					'retry_after' => 2,
@@ -1179,7 +1179,7 @@ final class Digitalogic_Pricing_Snapshot {
 		if ( ! $this->schedule_state_revision_event_retry() ) {
 			return new WP_Error(
 				'digitalogic_pricing_state_retry_unavailable',
-				'اجرای دوبارهٔ رویداد وضعیت قیمت زمان‌بندی نشد.',
+				__( 'اجرای دوبارهٔ رویداد وضعیت قیمت زمان‌بندی نشد.', 'digitalogic' ),
 				array(
 					'blocking'    => false,
 					'retry_after' => 2,
@@ -1195,7 +1195,7 @@ final class Digitalogic_Pricing_Snapshot {
 		if ( ! $this->persist_source_lifecycle_transition( $before, $after ) ) {
 			return new WP_Error(
 				'digitalogic_pricing_source_outbox_unavailable',
-				'ثبت صف پایدار تغییر منبع قیمت ممکن نشد.',
+				__( 'ثبت صف پایدار تغییر منبع قیمت ممکن نشد.', 'digitalogic' ),
 				array(
 					'blocking'    => false,
 					'retry_after' => 2,

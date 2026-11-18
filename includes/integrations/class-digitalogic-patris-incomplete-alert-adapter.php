@@ -71,7 +71,7 @@ final class Digitalogic_Patris_Incomplete_Alert_Private_Adapter {
 	 */
 	public static function deliver( $event ) {
 		if ( ! self::valid_event( $event ) ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_adapter_event_invalid', 'The private alert event is invalid.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_adapter_event_invalid', __( 'The private alert event is invalid.', 'digitalogic' ) );
 		}
 
 		$secret = self::shared_secret();
@@ -80,7 +80,7 @@ final class Digitalogic_Patris_Incomplete_Alert_Private_Adapter {
 		}
 		$body = wp_json_encode( $event, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE );
 		if ( ! is_string( $body ) || '' === $body || strlen( $body ) > 65536 ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_adapter_event_invalid', 'The private alert event is invalid.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_adapter_event_invalid', __( 'The private alert event is invalid.', 'digitalogic' ) );
 		}
 
 		$timestamp = (string) time();
@@ -103,15 +103,15 @@ final class Digitalogic_Patris_Incomplete_Alert_Private_Adapter {
 			)
 		);
 		if ( is_wp_error( $response ) ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_adapter_unavailable', 'The private operator route is unavailable.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_adapter_unavailable', __( 'The private operator route is unavailable.', 'digitalogic' ) );
 		}
 		if ( 200 !== (int) wp_remote_retrieve_response_code( $response ) ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_adapter_pending', 'The private operator route has no provider receipt yet.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_adapter_pending', __( 'The private operator route has no provider receipt yet.', 'digitalogic' ) );
 		}
 
 		$receipt = json_decode( (string) wp_remote_retrieve_body( $response ), true );
 		if ( ! self::valid_receipt( $receipt, $event_id ) ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_adapter_receipt_invalid', 'The private operator route returned an invalid provider receipt.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_adapter_receipt_invalid', __( 'The private operator route returned an invalid provider receipt.', 'digitalogic' ) );
 		}
 
 		return $receipt;
@@ -146,15 +146,15 @@ final class Digitalogic_Patris_Incomplete_Alert_Private_Adapter {
 			? (string) DIGITALOGIC_PATRIS_ALERT_ADAPTER_KEY_FILE
 			: '/etc/digitalogic-patris-incomplete-alert-adapter.key';
 		if ( '' === $file || "\0" === substr( $file, 0, 1 ) || ! is_readable( $file ) || is_link( $file ) ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_adapter_auth_unavailable', 'The private operator route is unavailable.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_adapter_auth_unavailable', __( 'The private operator route is unavailable.', 'digitalogic' ) );
 		}
 		$stat = @stat( $file );
 		if ( ! is_array( $stat ) || 0 !== (int) ( $stat['uid'] ?? -1 ) || 0 !== ( (int) ( $stat['mode'] ?? 0 ) & 0007 ) ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_adapter_auth_unavailable', 'The private operator route is unavailable.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_adapter_auth_unavailable', __( 'The private operator route is unavailable.', 'digitalogic' ) );
 		}
 		$secret = trim( (string) @file_get_contents( $file ) );
 		if ( strlen( $secret ) < 32 || strlen( $secret ) > 512 || 1 !== preg_match( '/\A[A-Za-z0-9._~+\/=\-]+\z/D', $secret ) ) {
-			return new WP_Error( 'digitalogic_patris_incomplete_alert_adapter_auth_unavailable', 'The private operator route is unavailable.' );
+			return new WP_Error( 'digitalogic_patris_incomplete_alert_adapter_auth_unavailable', __( 'The private operator route is unavailable.', 'digitalogic' ) );
 		}
 		return $secret;
 	}

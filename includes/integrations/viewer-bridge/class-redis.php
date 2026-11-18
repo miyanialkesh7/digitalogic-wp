@@ -266,7 +266,7 @@ final class Redis {
 		}
 		$encoded = wp_json_encode( $event, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES );
 		if ( ! is_string( $encoded ) ) {
-			return new WP_Error( 'digitalogic_viewer_event_encoding_failed', 'Event encoding failed.' );
+			return new WP_Error( 'digitalogic_viewer_event_encoding_failed', __( 'Event encoding failed.', 'digitalogic-viewer-bridge' ) );
 		}
 		if ( strlen( $encoded ) > self::MAX_EVENT_BYTES ) {
 			return new WP_Error(

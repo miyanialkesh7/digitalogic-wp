@@ -176,6 +176,7 @@ $report_status_titles = array(
                         <p class="description">
                             <?php
                             printf(
+                                /* translators: 1: minimum markup percentage, 2: maximum markup percentage, 3: maximum number of fractional digits. */
                                 esc_html__('بازه مجاز: %1$s تا %2$s درصد، با حداکثر %3$d رقم اعشار.', 'digitalogic'),
                                 esc_html($default_markup['bounds']['minimum']),
                                 esc_html($default_markup['bounds']['maximum']),
@@ -512,7 +513,7 @@ $report_status_titles = array(
 		<?php if ($report['pagination']['pages'] > 1) : ?>
 			<p class="tablenav-pages">
 				<?php if ($report['pagination']['page'] > 1) : ?><a class="button" href="<?php echo esc_url($report_url(array('report_view' => $report['view'], 'report_category' => $report['filters']['category'], 'report_page' => $report['pagination']['page'] - 1))); ?>"><?php echo esc_html__('Previous', 'digitalogic'); ?></a><?php endif; ?>
-				<span><?php echo esc_html(sprintf(__('Page %1$d of %2$d', 'digitalogic'), $report['pagination']['page'], $report['pagination']['pages'])); ?></span>
+				<span><?php /* translators: 1: current page number, 2: total number of pages. */ echo esc_html(sprintf(__('Page %1$d of %2$d', 'digitalogic'), $report['pagination']['page'], $report['pagination']['pages'])); ?></span>
 				<?php if ($report['pagination']['page'] < $report['pagination']['pages']) : ?><a class="button" href="<?php echo esc_url($report_url(array('report_view' => $report['view'], 'report_category' => $report['filters']['category'], 'report_page' => $report['pagination']['page'] + 1))); ?>"><?php echo esc_html__('Next', 'digitalogic'); ?></a><?php endif; ?>
 			</p>
 		<?php endif; ?>

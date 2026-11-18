@@ -197,7 +197,7 @@ final class Digitalogic_Product_Supplier_Links_CLI {
 			$this->output_error(
 				new WP_Error(
 					'digitalogic_supplier_link_id_required',
-					'گزینه --link-id الزامی است.',
+					__( 'گزینه --link-id الزامی است.', 'digitalogic' ),
 					array( 'status' => 400 )
 				)
 			);
@@ -224,7 +224,7 @@ final class Digitalogic_Product_Supplier_Links_CLI {
 		if ( ! is_string( $json ) || '' === trim( $json ) || strlen( $json ) > Digitalogic_Product_Supplier_Links::MAX_INPUT_BYTES ) {
 			return new WP_Error(
 				'digitalogic_supplier_links_input_invalid',
-				'ورودی JSON خالی یا بزرگ‌تر از حد مجاز است.',
+				__( 'ورودی JSON خالی یا بزرگ‌تر از حد مجاز است.', 'digitalogic' ),
 				array( 'status' => 400 )
 			);
 		}
@@ -235,7 +235,7 @@ final class Digitalogic_Product_Supplier_Links_CLI {
 		} catch ( JsonException ) {
 			return new WP_Error(
 				'digitalogic_supplier_links_json_invalid',
-				'ساختار JSON لینک‌های تأمین‌کننده معتبر نیست.',
+				__( 'ساختار JSON لینک‌های تأمین‌کننده معتبر نیست.', 'digitalogic' ),
 				array( 'status' => 400 )
 			);
 		}
@@ -261,7 +261,7 @@ final class Digitalogic_Product_Supplier_Links_CLI {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return new WP_Error(
 				'digitalogic_supplier_links_admin_required',
-				'این دستور باید با --user=<administrator> اجرا شود.',
+				__( 'این دستور باید با --user=<administrator> اجرا شود.', 'digitalogic' ),
 				array( 'status' => 403 )
 			);
 		}
@@ -271,7 +271,7 @@ final class Digitalogic_Product_Supplier_Links_CLI {
 		if ( 1 !== (int) $has_id + (int) $has_sku ) {
 			return new WP_Error(
 				'digitalogic_supplier_links_selector_invalid',
-				'دقیقاً یکی از گزینه‌های --id یا --sku را مشخص کنید.',
+				__( 'دقیقاً یکی از گزینه‌های --id یا --sku را مشخص کنید.', 'digitalogic' ),
 				array( 'status' => 400 )
 			);
 		}
@@ -286,14 +286,14 @@ final class Digitalogic_Product_Supplier_Links_CLI {
 		if ( 'product' !== $product['post_type'] ) {
 			return new WP_Error(
 				'digitalogic_supplier_links_parent_product_required',
-				'شناسه باید متعلق به محصول اصلی باشد، نه تنوع محصول.',
+				__( 'شناسه باید متعلق به محصول اصلی باشد، نه تنوع محصول.', 'digitalogic' ),
 				array( 'status' => 400 )
 			);
 		}
 		if ( ! current_user_can( 'edit_post', (int) $product['woocommerce_id'] ) ) {
 			return new WP_Error(
 				'digitalogic_supplier_links_edit_forbidden',
-				'کاربر انتخاب‌شده اجازه ویرایش این محصول را ندارد.',
+				__( 'کاربر انتخاب‌شده اجازه ویرایش این محصول را ندارد.', 'digitalogic' ),
 				array( 'status' => 403 )
 			);
 		}
@@ -361,7 +361,7 @@ final class Digitalogic_Product_Supplier_Links_CLI {
 	private function stdin_error() {
 		return new WP_Error(
 			'digitalogic_supplier_links_stdin_required',
-			'JSON لینک تأمین‌کننده را از ورودی استاندارد (stdin) ارسال کنید.',
+			__( 'JSON لینک تأمین‌کننده را از ورودی استاندارد (stdin) ارسال کنید.', 'digitalogic' ),
 			array( 'status' => 400 )
 		);
 	}

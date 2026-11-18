@@ -96,7 +96,7 @@ final class Digitalogic_SKU_Guard {
 	 */
 	public static function validate( $value ) {
 		if ( ! is_scalar( $value ) && null !== $value ) {
-			return self::validation_error( 'digitalogic_sku_not_scalar', 'SKU must be a text value.' );
+			return self::validation_error( 'digitalogic_sku_not_scalar', __( 'SKU must be a text value.', 'digitalogic' ) );
 		}
 
 		$raw        = null === $value ? '' : (string) $value;
@@ -104,15 +104,15 @@ final class Digitalogic_SKU_Guard {
 		if ( '' === $normalized ) {
 			return '' === $raw
 				? ''
-				: self::validation_error( 'digitalogic_sku_empty_after_normalization', 'SKU contains no usable characters.' );
+				: self::validation_error( 'digitalogic_sku_empty_after_normalization', __( 'SKU contains no usable characters.', 'digitalogic' ) );
 		}
 
 		$length = function_exists( 'mb_strlen' ) ? mb_strlen( $normalized, 'UTF-8' ) : strlen( $normalized );
 		if ( $length > self::MAX_LENGTH ) {
-			return self::validation_error( 'digitalogic_sku_too_long', 'SKU cannot exceed 100 characters.' );
+			return self::validation_error( 'digitalogic_sku_too_long', __( 'SKU cannot exceed 100 characters.', 'digitalogic' ) );
 		}
 		if ( 1 !== preg_match( '/^[\p{L}\p{N}._:\/+#@()\-]+$/u', $normalized ) ) {
-			return self::validation_error( 'digitalogic_sku_invalid_characters', 'SKU contains unsupported characters.' );
+			return self::validation_error( 'digitalogic_sku_invalid_characters', __( 'SKU contains unsupported characters.', 'digitalogic' ) );
 		}
 
 		return $normalized;
@@ -395,7 +395,7 @@ final class Digitalogic_SKU_Guard {
 
 	/** Build one validation error without depending on WooCommerce load order. */
 	private static function validation_error( $code, $message ) {
-		return new WP_Error( $code, __( $message, 'digitalogic' ), array( 'status' => 400 ) );
+		return new WP_Error( $code, $message, array( 'status' => 400 ) );
 	}
 }
 

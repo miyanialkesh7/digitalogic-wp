@@ -43,6 +43,7 @@ function digitalogic_php_version_notice() {
         <p>
             <?php
             printf(
+                /* translators: 1: minimum required PHP version, 2: current PHP version. */
                 esc_html__('Digitalogic requires PHP %1$s or newer. The current server is running PHP %2$s. Please upgrade PHP to a supported release before activating Digitalogic.', 'digitalogic'),
                 esc_html(DIGITALOGIC_MIN_PHP_VERSION),
                 esc_html(PHP_VERSION)

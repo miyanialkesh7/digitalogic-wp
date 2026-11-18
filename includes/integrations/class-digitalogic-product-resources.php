@@ -98,7 +98,7 @@ final class Digitalogic_Product_Resources {
 	 */
 	public function replace_documents( int $product_id, $documents ) {
 		if ( 'product' !== get_post_type( $product_id ) ) {
-			return new WP_Error( 'digitalogic_invalid_document_product', 'Product documents require an existing product post.' );
+			return new WP_Error( 'digitalogic_invalid_document_product', __( 'Product documents require an existing product post.', 'digitalogic' ) );
 		}
 
 		$normalized = $this->normalize_documents( $documents, true, $product_id );
@@ -110,14 +110,14 @@ final class Digitalogic_Product_Resources {
 		if ( $current !== $normalized ) {
 			$updated = update_post_meta( $product_id, self::META_KEY, $normalized );
 			if ( false === $updated && get_post_meta( $product_id, self::META_KEY, true ) !== $normalized ) {
-				return new WP_Error( 'digitalogic_document_write_failed', 'Product document metadata could not be written.' );
+				return new WP_Error( 'digitalogic_document_write_failed', __( 'Product document metadata could not be written.', 'digitalogic' ) );
 			}
 		}
 
 		wp_cache_delete( $product_id, 'post_meta' );
 		$readback = $this->normalize_documents( get_post_meta( $product_id, self::META_KEY, true ), true, $product_id );
 		if ( is_wp_error( $readback ) || $readback !== $normalized ) {
-			return new WP_Error( 'digitalogic_document_readback_failed', 'Product document metadata failed live readback verification.' );
+			return new WP_Error( 'digitalogic_document_readback_failed', __( 'Product document metadata failed live readback verification.', 'digitalogic' ) );
 		}
 
 		return $readback;
@@ -146,7 +146,7 @@ final class Digitalogic_Product_Resources {
 	private function normalize_documents( $documents, bool $strict, int $product_id ) {
 		if ( ! is_array( $documents ) || ! array_is_list( $documents ) ) {
 			return $strict
-				? new WP_Error( 'digitalogic_invalid_documents', 'Product documents must be a JSON-style list.' )
+				? new WP_Error( 'digitalogic_invalid_documents', __( 'Product documents must be a JSON-style list.', 'digitalogic' ) )
 				: array();
 		}
 
@@ -279,7 +279,7 @@ final class Digitalogic_Product_Resources {
 		}
 
 		if ( $strict && empty( $normalized ) ) {
-			return new WP_Error( 'digitalogic_empty_documents', 'At least one complete product document is required.' );
+			return new WP_Error( 'digitalogic_empty_documents', __( 'At least one complete product document is required.', 'digitalogic' ) );
 		}
 
 		return $normalized;

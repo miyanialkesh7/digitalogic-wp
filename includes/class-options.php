@@ -320,6 +320,7 @@ class Digitalogic_Options {
         } elseif ($diff_days === 1) {
             return __('1 day ago', 'digitalogic');
         } else {
+            /* translators: %d: number of days. */
             return sprintf(__('%d days ago', 'digitalogic'), $diff_days);
         }
     }

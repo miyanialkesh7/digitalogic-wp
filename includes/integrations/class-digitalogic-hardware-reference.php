@@ -183,7 +183,7 @@ final class Digitalogic_Hardware_Reference {
 				}
 			}
 		}
-		return new WP_Error( 'digitalogic_hardware_product_missing', 'مرجع تأییدشده‌ای برای این کد کالا ثبت نشده است.', array( 'status' => 404 ) );
+		return new WP_Error( 'digitalogic_hardware_product_missing', __( 'مرجع تأییدشده‌ای برای این کد کالا ثبت نشده است.', 'digitalogic' ), array( 'status' => 404 ) );
 	}
 
 	/**
@@ -194,7 +194,7 @@ final class Digitalogic_Hardware_Reference {
 	 */
 	public static function rest_board( WP_REST_Request $request ) {
 		$board = self::read( $request['board'] );
-		return $board ? $board : new WP_Error( 'digitalogic_hardware_missing', 'مرجع سخت‌افزار پیدا نشد.', array( 'status' => 404 ) );
+		return $board ? $board : new WP_Error( 'digitalogic_hardware_missing', __( 'مرجع سخت‌افزار پیدا نشد.', 'digitalogic' ), array( 'status' => 404 ) );
 	}
 
 	/**

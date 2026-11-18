@@ -12,8 +12,8 @@ fi
 
 # The repository predates its current WordPress coding-standard setup. Keep
 # releases from adding debt while the existing violations are paid down.
-max_errors=43221
-max_warnings=3016
+max_errors=43199
+max_warnings=2977
 report="$(mktemp "${TMPDIR:-/tmp}/digitalogic-phpcs.XXXXXX.json")"
 trap 'rm -f -- "$report"' EXIT
 

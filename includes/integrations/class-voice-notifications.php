@@ -249,7 +249,7 @@ final class Digitalogic_Voice_Notifications {
 	private static function normalize_settings_payload( $saved ) {
 		$defaults = self::defaults();
 		if ( ! is_array( $saved ) || ! isset( $saved['statuses'] ) || ! is_array( $saved['statuses'] ) ) {
-			return new WP_Error( 'digitalogic_voice_policy', 'invalid voice policy' );
+			return new WP_Error( 'digitalogic_voice_policy', __( 'invalid voice policy', 'digitalogic' ) );
 		}
 		$binary      = static function ( $value ) {
 			if ( in_array( $value, array( 0, '0', false ), true ) ) {
@@ -267,10 +267,10 @@ final class Digitalogic_Voice_Notifications {
 		$quiet_end   = (string) ( $saved['quiet_end'] ?? '' );
 		if ( null === $global || false === $hourly || false === $daily || $hourly < 1 || $hourly > 10 || $daily < 1 || $daily > 30
 			|| self::sanitize_time( $quiet_start, '' ) !== $quiet_start || self::sanitize_time( $quiet_end, '' ) !== $quiet_end ) {
-			return new WP_Error( 'digitalogic_voice_policy', 'invalid voice policy' );
+			return new WP_Error( 'digitalogic_voice_policy', __( 'invalid voice policy', 'digitalogic' ) );
 		}
 		if ( ! empty( array_diff( self::STATUS_SLUGS, array_keys( $saved['statuses'] ) ) ) ) {
-			return new WP_Error( 'digitalogic_voice_policy', 'incomplete voice policy' );
+			return new WP_Error( 'digitalogic_voice_policy', __( 'incomplete voice policy', 'digitalogic' ) );
 		}
 		$result = array(
 			'global_enabled' => $global,
@@ -283,14 +283,14 @@ final class Digitalogic_Voice_Notifications {
 		foreach ( self::STATUS_SLUGS as $slug ) {
 			$status = $saved['statuses'][ $slug ] ?? null;
 			if ( ! is_array( $status ) ) {
-				return new WP_Error( 'digitalogic_voice_policy', 'invalid voice status policy' );
+				return new WP_Error( 'digitalogic_voice_policy', __( 'invalid voice status policy', 'digitalogic' ) );
 			}
 			$enabled            = $binary( $status['enabled'] ?? null );
 			$version            = filter_var( $status['version'] ?? null, FILTER_VALIDATE_INT );
 			$template           = $status['template'] ?? null;
 			$validated_template = is_string( $template ) ? self::sanitize_template( $template ) : new WP_Error( 'digitalogic_voice_policy' );
 			if ( null === $enabled || false === $version || $version < 1 || is_wp_error( $validated_template ) || ! hash_equals( $template, $validated_template ) ) {
-				return new WP_Error( 'digitalogic_voice_policy', 'invalid voice status policy' );
+				return new WP_Error( 'digitalogic_voice_policy', __( 'invalid voice status policy', 'digitalogic' ) );
 			}
 			$result['statuses'][ $slug ] = array(
 				'enabled'  => $enabled,
@@ -317,12 +317,12 @@ final class Digitalogic_Voice_Notifications {
 			ARRAY_A
 		);
 		if ( '' !== (string) $wpdb->last_error || ! is_array( $row ) || ! array_key_exists( 'option_value', $row ) ) {
-			return new WP_Error( 'digitalogic_voice_policy', 'voice policy unavailable' );
+			return new WP_Error( 'digitalogic_voice_policy', __( 'voice policy unavailable', 'digitalogic' ) );
 		}
 		$value = $row['option_value'];
 		if ( is_string( $value ) && str_starts_with( $value, 'a:' ) ) {
 			$value = @unserialize( $value, array( 'allowed_classes' => false ) ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize -- Direct options read requires safe class-disabled decoding.
-			return is_array( $value ) ? $value : new WP_Error( 'digitalogic_voice_policy', 'voice policy serialization invalid' );
+			return is_array( $value ) ? $value : new WP_Error( 'digitalogic_voice_policy', __( 'voice policy serialization invalid', 'digitalogic' ) );
 		}
 		return $value;
 	}
@@ -359,7 +359,7 @@ final class Digitalogic_Voice_Notifications {
 		$settings = self::settings_payload_from_database();
 		$global   = self::global_enabled_from_database();
 		if ( is_wp_error( $settings ) || null === $global ) {
-			return new WP_Error( 'digitalogic_voice_policy', 'voice policy unavailable' );
+			return new WP_Error( 'digitalogic_voice_policy', __( 'voice policy unavailable', 'digitalogic' ) );
 		}
 		$settings['global_enabled'] = $global ? 1 : 0;
 		return $settings;
@@ -619,7 +619,7 @@ final class Digitalogic_Voice_Notifications {
 	private function live_job_context( $job ) {
 		$settings = self::settings_from_database();
 		if ( is_wp_error( $settings ) ) {
-			return new WP_Error( 'digitalogic_voice_policy', 'voice policy unavailable' );
+			return new WP_Error( 'digitalogic_voice_policy', __( 'voice policy unavailable', 'digitalogic' ) );
 		}
 		$status_settings = $settings['statuses'][ $job->status_slug ] ?? null;
 		$config          = self::callout_config();
@@ -627,11 +627,11 @@ final class Digitalogic_Voice_Notifications {
 			|| empty( $status_settings['enabled'] ) || is_wp_error( $config )
 			|| (int) ( $status_settings['version'] ?? 0 ) !== (int) $job->template_version
 			|| ! hash_equals( (string) ( $status_settings['template'] ?? '' ), (string) $job->template_snapshot ) ) {
-			return new WP_Error( 'digitalogic_voice_disabled', 'voice policy disabled' );
+			return new WP_Error( 'digitalogic_voice_disabled', __( 'voice policy disabled', 'digitalogic' ) );
 		}
 		$user = get_userdata( (int) $job->user_id );
 		if ( ! is_object( $user ) || (int) $user->ID !== (int) $job->user_id ) {
-			return new WP_Error( 'digitalogic_voice_user', 'customer account unavailable' );
+			return new WP_Error( 'digitalogic_voice_user', __( 'customer account unavailable', 'digitalogic' ) );
 		}
 		$order   = function_exists( 'wc_get_order' ) ? wc_get_order( (int) $job->order_id ) : null;
 		$contact = Digitalogic_Call_Verification::contact_by_id( (int) $job->contact_id );
@@ -640,7 +640,7 @@ final class Digitalogic_Voice_Notifications {
 			|| (string) $order->get_status() !== (string) $job->status_slug || ! $contact
 			|| (int) $contact->user_id !== (int) $job->user_id
 			|| ! Digitalogic_Call_Verification::contact_allows_voice_event( $contact, (string) $job->status_slug ) ) {
-			return new WP_Error( 'digitalogic_voice_context', 'live order/contact consent unavailable' );
+			return new WP_Error( 'digitalogic_voice_context', __( 'live order/contact consent unavailable', 'digitalogic' ) );
 		}
 
 		return array(

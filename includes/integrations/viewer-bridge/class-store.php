@@ -291,7 +291,7 @@ final class Store {
 		global $wpdb;
 		$patris_code = self::patris_code( $patris_code );
 		if ( $patris_code === '' || $term_id < 1 ) {
-			return new WP_Error( 'digitalogic_viewer_mapping_invalid', 'Invalid mapping.', array( 'status' => 400 ) );
+			return new WP_Error( 'digitalogic_viewer_mapping_invalid', __( 'Invalid mapping.', 'digitalogic-viewer-bridge' ), array( 'status' => 400 ) );
 		}
 		$revision = Revision::hash(
 			array(
@@ -314,7 +314,7 @@ final class Store {
 			array( '%s', '%d', '%s', '%d', '%s' )
 		);
 		return $result === false
-			? new WP_Error( 'digitalogic_viewer_mapping_write_failed', 'Mapping write failed.', array( 'status' => 503 ) )
+			? new WP_Error( 'digitalogic_viewer_mapping_write_failed', __( 'Mapping write failed.', 'digitalogic-viewer-bridge' ), array( 'status' => 503 ) )
 			: $revision;
 	}
 

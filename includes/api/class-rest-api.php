@@ -864,7 +864,7 @@ class Digitalogic_REST_API {
 			return $result;
 		}
 		if ( ! empty( $result['query_failed'] ) ) {
-			return new WP_Error( 'digitalogic_catalog_unavailable', 'The catalog query failed.', array( 'status' => 503 ) );
+			return new WP_Error( 'digitalogic_catalog_unavailable', __( 'The catalog query failed.', 'digitalogic' ), array( 'status' => 503 ) );
 		}
 
 		return new WP_REST_Response(
@@ -984,7 +984,7 @@ class Digitalogic_REST_API {
 		) {
 			return new WP_Error(
 				'digitalogic_pricing_expected_revision_required',
-				'پیش از اعمال تنظیمات قیمت، تازه‌ترین نسخهٔ تنظیمات را دریافت کنید.',
+				__( 'پیش از اعمال تنظیمات قیمت، تازه‌ترین نسخهٔ تنظیمات را دریافت کنید.', 'digitalogic' ),
 				array( 'status' => 400 )
 			);
 		}
@@ -1443,7 +1443,7 @@ class Digitalogic_REST_API {
 		if ( ! is_array( $data ) || ! isset( $data['settings'] ) || ! is_array( $data['settings'] ) ) {
 			return $this->currency_job_response( new WP_Error(
 				'digitalogic_pricing_settings_intent_invalid',
-				'فقط فیلدهای ویرایش‌شدهٔ تنظیمات قیمت را ارسال کنید.',
+				__( 'فقط فیلدهای ویرایش‌شدهٔ تنظیمات قیمت را ارسال کنید.', 'digitalogic' ),
 				array( 'status' => 400 )
 			) );
 		}
@@ -1583,7 +1583,7 @@ class Digitalogic_REST_API {
 		) {
 			return new WP_Error(
 				'digitalogic_currency_if_match_required',
-				'expected_state_revision و هدر If-Match نقل‌قول‌شده باید دقیقاً یکسان باشند.',
+				__( 'expected_state_revision و هدر If-Match نقل‌قول‌شده باید دقیقاً یکسان باشند.', 'digitalogic' ),
 				array(
 					'status'   => 428,
 					'blocking' => true,
@@ -1605,7 +1605,7 @@ class Digitalogic_REST_API {
 		) {
 			return new WP_Error(
 				'digitalogic_currency_idempotency_key_required',
-				'request_id و هدر Idempotency-Key باید دقیقاً یکسان باشند.',
+				__( 'request_id و هدر Idempotency-Key باید دقیقاً یکسان باشند.', 'digitalogic' ),
 				array(
 					'status'   => 428,
 					'blocking' => true,

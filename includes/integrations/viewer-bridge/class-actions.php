@@ -47,6 +47,7 @@ final class Actions {
 				'exclude_from_search'       => true,
 				'show_in_admin_all_list'    => true,
 				'show_in_admin_status_list' => true,
+				/* translators: %s: number of viewer-trashed items. */
 				'label_count'               => _n_noop(
 					'Viewer Trash <span class="count">(%s)</span>',
 					'Viewer Trash <span class="count">(%s)</span>',
@@ -72,7 +73,7 @@ final class Actions {
 		) {
 			return self::error(
 				'request_shape_invalid',
-				'The action request must match the exact contract shape.',
+				__( 'The action request must match the exact contract shape.', 'digitalogic-viewer-bridge' ),
 				400
 			);
 		}
@@ -91,10 +92,10 @@ final class Actions {
 				&& ! in_array( $entity_type, array( 'category', 'product' ), true )
 			)
 		) {
-			return self::error( 'action_not_allowed', 'The requested action is not allowed.', 403 );
+			return self::error( 'action_not_allowed', __( 'The requested action is not allowed.', 'digitalogic-viewer-bridge' ), 403 );
 		}
 		if ( ! preg_match( '/^[a-z][a-z0-9_.:-]{1,127}$/i', $entity_id ) ) {
-			return self::error( 'entity_id_invalid', 'The entity identifier is invalid.', 400 );
+			return self::error( 'entity_id_invalid', __( 'The entity identifier is invalid.', 'digitalogic-viewer-bridge' ), 400 );
 		}
 
 		$expected = self::expected_revision( $request, $body );
@@ -134,7 +135,7 @@ final class Actions {
 				if ( $event instanceof WP_Error ) {
 					return self::error(
 						'event_delivery_pending',
-						'The mutation is committed, but its live event still requires retry.',
+						__( 'The mutation is committed, but its live event still requires retry.', 'digitalogic-viewer-bridge' ),
 						503,
 						array(
 							'mutationCommitted' => true,
@@ -152,7 +153,7 @@ final class Actions {
 				) {
 					return self::error(
 						'audit_completion_failed',
-						'The event was delivered, but its audit checkpoint requires retry.',
+						__( 'The event was delivered, but its audit checkpoint requires retry.', 'digitalogic-viewer-bridge' ),
 						503,
 						array( 'mutationCommitted' => true )
 					);
@@ -166,7 +167,7 @@ final class Actions {
 		if ( ! hash_equals( (string) $loaded['revision'], $expected ) ) {
 			$error = self::error(
 				'revision_conflict',
-				'The entity changed after it was loaded. Refresh and try again.',
+				__( 'The entity changed after it was loaded. Refresh and try again.', 'digitalogic-viewer-bridge' ),
 				412,
 				array( 'currentRevision' => $loaded['revision'] )
 			);
@@ -197,7 +198,7 @@ final class Actions {
 		if ( ! Store::complete_action( $audit_id, $response['revision'], $response ) ) {
 			return self::error(
 				'audit_completion_failed',
-				'The mutation succeeded, but its audit record could not be finalized.',
+				__( 'The mutation succeeded, but its audit record could not be finalized.', 'digitalogic-viewer-bridge' ),
 				503
 			);
 		}
@@ -211,7 +212,7 @@ final class Actions {
 		if ( $event instanceof WP_Error ) {
 			return self::error(
 				'event_delivery_pending',
-				'The mutation is committed, but its live event requires retry.',
+				__( 'The mutation is committed, but its live event requires retry.', 'digitalogic-viewer-bridge' ),
 				503,
 				array(
 					'mutationCommitted'        => true,
@@ -230,7 +231,7 @@ final class Actions {
 		) {
 			return self::error(
 				'audit_completion_failed',
-				'The event was delivered, but its audit checkpoint requires retry.',
+				__( 'The event was delivered, but its audit checkpoint requires retry.', 'digitalogic-viewer-bridge' ),
 				503,
 				array( 'mutationCommitted' => true )
 			);
@@ -292,7 +293,7 @@ final class Actions {
 			}
 			$term = get_term( $resolved['termId'], 'product_cat' );
 			if ( ! $term instanceof WP_Term ) {
-				return self::error( 'category_not_found', 'Category not found.', 404 );
+				return self::error( 'category_not_found', __( 'Category not found.', 'digitalogic-viewer-bridge' ), 404 );
 			}
 			return array(
 				'object'          => $term,
@@ -312,7 +313,7 @@ final class Actions {
 			if ( ! $object instanceof WC_Product ) {
 				return self::error(
 					'product_not_mutable',
-					'Only an existing WooCommerce product can be changed.',
+					__( 'Only an existing WooCommerce product can be changed.', 'digitalogic-viewer-bridge' ),
 					404
 				);
 			}
@@ -325,7 +326,7 @@ final class Actions {
 			$id     = Live_State::woo_id( $entity_id, 'order' );
 			$object = $id > 0 ? wc_get_order( $id ) : null;
 			if ( ! $object instanceof WC_Order ) {
-				return self::error( 'order_not_found', 'Order not found.', 404 );
+				return self::error( 'order_not_found', __( 'Order not found.', 'digitalogic-viewer-bridge' ), 404 );
 			}
 			return array(
 				'object'   => $object,
@@ -335,14 +336,14 @@ final class Actions {
 		if ( $entity_type === 'customer' ) {
 			$id = Live_State::woo_id( $entity_id, 'customer' );
 			if ( $id < 1 || ! get_userdata( $id ) ) {
-				return self::error( 'customer_not_found', 'Customer not found.', 404 );
+				return self::error( 'customer_not_found', __( 'Customer not found.', 'digitalogic-viewer-bridge' ), 404 );
 			}
 			return array(
 				'userId'   => $id,
 				'revision' => Revision::customer( $id ),
 			);
 		}
-		return self::error( 'entity_type_not_allowed', 'Entity type is not allowed.', 403 );
+		return self::error( 'entity_type_not_allowed', __( 'Entity type is not allowed.', 'digitalogic-viewer-bridge' ), 403 );
 	}
 
 	/**
@@ -371,7 +372,7 @@ final class Actions {
 			if ( ! in_array( $to, Live_State::allowed_order_transitions( $from ), true ) ) {
 				return self::error(
 					'order_transition_not_allowed',
-					'Only hold, resume, processing, and completion transitions are allowed.',
+					__( 'Only hold, resume, processing, and completion transitions are allowed.', 'digitalogic-viewer-bridge' ),
 					409
 				);
 			}
@@ -388,7 +389,7 @@ final class Actions {
 			);
 			return array( 'revision' => Revision::customer( $user_id ) );
 		}
-		return self::error( 'action_not_implemented', 'Action is not implemented.', 501 );
+		return self::error( 'action_not_implemented', __( 'Action is not implemented.', 'digitalogic-viewer-bridge' ), 501 );
 	}
 
 	/**
@@ -410,7 +411,7 @@ final class Actions {
 			if ( get_post_type( $product_id ) !== 'product' ) {
 				return self::error(
 					'lifecycle_product_type_not_allowed',
-					'Only top-level WooCommerce products support lifecycle actions.',
+					__( 'Only top-level WooCommerce products support lifecycle actions.', 'digitalogic-viewer-bridge' ),
 					409
 				);
 			}
@@ -418,7 +419,7 @@ final class Actions {
 				get_post_status( $product_id ) === Live_State::PRODUCT_TRASH_STATUS;
 			if ( $action === 'entity.trash' ) {
 				if ( $is_trashed ) {
-					return self::error( 'already_trashed', 'Product is already trashed.', 409 );
+					return self::error( 'already_trashed', __( 'Product is already trashed.', 'digitalogic-viewer-bridge' ), 409 );
 				}
 				$previous = get_post_status( $product_id );
 				if ( ! in_array( $previous, array( 'publish', 'draft', 'pending', 'private' ), true ) ) {
@@ -444,7 +445,7 @@ final class Actions {
 				if ( ! $product instanceof WC_Product ) {
 					return self::error(
 						'product_reload_failed',
-						'The softly trashed product could not be reloaded.',
+						__( 'The softly trashed product could not be reloaded.', 'digitalogic-viewer-bridge' ),
 						503
 					);
 				}
@@ -454,7 +455,7 @@ final class Actions {
 				);
 			}
 			if ( ! $is_trashed ) {
-				return self::error( 'not_trashed', 'Product is not trashed.', 409 );
+				return self::error( 'not_trashed', __( 'Product is not trashed.', 'digitalogic-viewer-bridge' ), 409 );
 			}
 			$restore_status = sanitize_key(
 				(string) get_post_meta(
@@ -482,7 +483,7 @@ final class Actions {
 			if ( ! $product instanceof WC_Product ) {
 				return self::error(
 					'product_reload_failed',
-					'The restored product could not be reloaded.',
+					__( 'The restored product could not be reloaded.', 'digitalogic-viewer-bridge' ),
 					503
 				);
 			}
@@ -493,12 +494,12 @@ final class Actions {
 		}
 
 		if ( ! $loaded['object'] instanceof WP_Term ) {
-			return self::error( 'lifecycle_entity_not_allowed', 'Entity is not mutable.', 409 );
+			return self::error( 'lifecycle_entity_not_allowed', __( 'Entity is not mutable.', 'digitalogic-viewer-bridge' ), 409 );
 		}
 		if ( in_array( (string) $loaded['matchState'], array( 'suggested', 'unresolved' ), true ) ) {
 			return self::error(
 				'category_mapping_requires_review',
-				'Suggested or unresolved categories are read-only until explicitly mapped.',
+				__( 'Suggested or unresolved categories are read-only until explicitly mapped.', 'digitalogic-viewer-bridge' ),
 				409
 			);
 		}
@@ -511,7 +512,7 @@ final class Actions {
 		);
 		if ( $action === 'entity.restore' ) {
 			if ( $trashed_at === '' ) {
-				return self::error( 'not_trashed', 'Category is not trashed.', 409 );
+				return self::error( 'not_trashed', __( 'Category is not trashed.', 'digitalogic-viewer-bridge' ), 409 );
 			}
 			delete_term_meta( $term_id, '_digitalogic_viewer_trashed_at' );
 			delete_term_meta( $term_id, '_digitalogic_viewer_reassigned_to' );
@@ -530,7 +531,7 @@ final class Actions {
 			);
 		}
 		if ( $trashed_at !== '' ) {
-			return self::error( 'already_trashed', 'Category is already trashed.', 409 );
+			return self::error( 'already_trashed', __( 'Category is already trashed.', 'digitalogic-viewer-bridge' ), 409 );
 		}
 
 		$children = get_terms(
@@ -559,7 +560,7 @@ final class Actions {
 		if ( count( $children ) > 1000 || count( $product_ids ) > 2000 ) {
 			return self::error(
 				'category_reassignment_too_large',
-				'Use the dedicated WordPress bulk tools for this category.',
+				__( 'Use the dedicated WordPress bulk tools for this category.', 'digitalogic-viewer-bridge' ),
 				409
 			);
 		}
@@ -582,8 +583,8 @@ final class Actions {
 					? 'category_source_managed'
 					: 'category_not_empty',
 				$source_managed
-					? 'A Patris-managed category requires an explicit reassignment target.'
-					: 'This category has children or products; choose an explicit reassignment target.',
+					? __( 'A Patris-managed category requires an explicit reassignment target.', 'digitalogic-viewer-bridge' )
+					: __( 'This category has children or products; choose an explicit reassignment target.', 'digitalogic-viewer-bridge' ),
 				409,
 				array(
 					'childCount'    => count( $children ),
@@ -609,7 +610,7 @@ final class Actions {
 			) {
 				return self::error(
 					'category_reassignment_target_invalid',
-					'The reassignment target must be a different active reviewed category.',
+					__( 'The reassignment target must be a different active reviewed category.', 'digitalogic-viewer-bridge' ),
 					409
 				);
 			}
@@ -631,7 +632,7 @@ final class Actions {
 			) {
 				return self::error(
 					'category_reassignment_target_invalid',
-					'The reassignment target must be a different active reviewed category.',
+					__( 'The reassignment target must be a different active reviewed category.', 'digitalogic-viewer-bridge' ),
 					409
 				);
 			}
@@ -705,7 +706,7 @@ final class Actions {
 		) {
 			return self::error(
 				'category_mapping_requires_review',
-				'Suggested or unresolved categories are read-only until explicitly mapped.',
+				__( 'Suggested or unresolved categories are read-only until explicitly mapped.', 'digitalogic-viewer-bridge' ),
 				409
 			);
 		}
@@ -714,7 +715,7 @@ final class Actions {
 		) {
 			return self::error(
 				'category_is_trashed',
-				'Restore the category before editing it.',
+				__( 'Restore the category before editing it.', 'digitalogic-viewer-bridge' ),
 				409
 			);
 		}
@@ -741,14 +742,14 @@ final class Actions {
 				if ( in_array( $parent['matchState'], array( 'suggested', 'unresolved' ), true ) ) {
 					return self::error(
 						'category_parent_requires_review',
-						'A suggested or unresolved category cannot be a persisted parent.',
+						__( 'A suggested or unresolved category cannot be a persisted parent.', 'digitalogic-viewer-bridge' ),
 						409
 					);
 				}
 				$parent_id = (int) $parent['termId'];
 			}
 			if ( $parent_id === $term_id ) {
-				return self::error( 'category_cycle', 'A category cannot parent itself.', 409 );
+				return self::error( 'category_cycle', __( 'A category cannot parent itself.', 'digitalogic-viewer-bridge' ), 409 );
 			}
 			if (
 				$parent_id > 0
@@ -756,7 +757,7 @@ final class Actions {
 			) {
 				return self::error(
 					'category_cycle',
-					'A category cannot move below one of its descendants.',
+					__( 'A category cannot move below one of its descendants.', 'digitalogic-viewer-bridge' ),
 					409
 				);
 			}
@@ -771,7 +772,7 @@ final class Actions {
 		} elseif ( $action === 'category.map_source' ) {
 			$code = (string) $payload['patrisCode'];
 			if ( ! isset( $loaded['context']['canonicalByPatris'][ $code ] ) ) {
-				return self::error( 'patris_category_not_found', 'Patris category not found.', 404 );
+				return self::error( 'patris_category_not_found', __( 'Patris category not found.', 'digitalogic-viewer-bridge' ), 404 );
 			}
 			$owners = get_terms(
 				array(
@@ -789,7 +790,7 @@ final class Actions {
 			) {
 				return self::error(
 					'authoritative_mapping_conflict',
-					'A different WooCommerce category owns this authoritative Patris code.',
+					__( 'A different WooCommerce category owns this authoritative Patris code.', 'digitalogic-viewer-bridge' ),
 					409
 				);
 			}
@@ -801,7 +802,7 @@ final class Actions {
 			if ( ! Store::delete_mapping( (string) $payload['patrisCode'] ) ) {
 				return self::error(
 					'reviewed_mapping_not_found',
-					'No reviewed viewer mapping exists for this source code.',
+					__( 'No reviewed viewer mapping exists for this source code.', 'digitalogic-viewer-bridge' ),
 					404
 				);
 			}
@@ -831,7 +832,7 @@ final class Actions {
 		if ( $product->get_status() === Live_State::PRODUCT_TRASH_STATUS ) {
 			return self::error(
 				'product_is_trashed',
-				'Restore the product before editing it.',
+				__( 'Restore the product before editing it.', 'digitalogic-viewer-bridge' ),
 				409
 			);
 		}
@@ -852,7 +853,7 @@ final class Actions {
 				if ( in_array( $resolved['matchState'], array( 'suggested', 'unresolved' ), true ) ) {
 					return self::error(
 						'category_mapping_requires_review',
-						'Products cannot be assigned to suggested or unresolved mappings.',
+						__( 'Products cannot be assigned to suggested or unresolved mappings.', 'digitalogic-viewer-bridge' ),
 						409
 					);
 				}
@@ -877,7 +878,7 @@ final class Actions {
 		}
 		$node = $context['nodes'][ $canonical_id ] ?? null;
 		if ( ! is_array( $node ) ) {
-			return self::error( 'category_not_found', 'Category not found.', 404 );
+			return self::error( 'category_not_found', __( 'Category not found.', 'digitalogic-viewer-bridge' ), 404 );
 		}
 		$preferred_term_id = 0;
 		if ( preg_match( '/^cat:wp:(\d+)$/', $canonical_id, $match ) ) {
@@ -926,7 +927,7 @@ final class Actions {
 		}
 		return self::error(
 			'category_not_mutable',
-			'This source-only category must be mapped before it can be changed.',
+			__( 'This source-only category must be mapped before it can be changed.', 'digitalogic-viewer-bridge' ),
 			409
 		);
 	}
@@ -968,42 +969,42 @@ final class Actions {
 		) {
 			return self::error(
 				'payload_shape_invalid',
-				'The action payload must match the exact action shape.',
+				__( 'The action payload must match the exact action shape.', 'digitalogic-viewer-bridge' ),
 				400
 			);
 		}
 		if ( in_array( $action, array( 'category.rename', 'product.rename' ), true ) ) {
 			$name = sanitize_text_field( (string) ( $payload['name'] ?? '' ) );
 			if ( $name === '' || mb_strlen( $name ) > 160 ) {
-				return self::error( 'name_invalid', 'Name must be 1–160 characters.', 400 );
+				return self::error( 'name_invalid', __( 'Name must be 1–160 characters.', 'digitalogic-viewer-bridge' ), 400 );
 			}
 			return array( 'name' => $name );
 		}
 		if ( $action === 'category.move' ) {
 			$parent_id = trim( (string) ( $payload['parentId'] ?? '' ) );
 			if ( ! preg_match( '/^cat:[A-Za-z0-9._:%-]+$/', $parent_id ) ) {
-				return self::error( 'parent_id_invalid', 'Parent category is invalid.', 400 );
+				return self::error( 'parent_id_invalid', __( 'Parent category is invalid.', 'digitalogic-viewer-bridge' ), 400 );
 			}
 			return array( 'parentId' => $parent_id );
 		}
 		if ( in_array( $action, array( 'category.map_source', 'category.unmap_source' ), true ) ) {
 			$code = Store::patris_code( (string) ( $payload['patrisCode'] ?? '' ) );
 			if ( $code === '' ) {
-				return self::error( 'patris_code_invalid', 'Patris code is invalid.', 400 );
+				return self::error( 'patris_code_invalid', __( 'Patris code is invalid.', 'digitalogic-viewer-bridge' ), 400 );
 			}
 			return array( 'patrisCode' => $code );
 		}
 		if ( $action === 'product.set_status' ) {
 			$status = sanitize_key( (string) ( $payload['status'] ?? '' ) );
 			if ( ! in_array( $status, array( 'publish', 'draft', 'pending', 'private' ), true ) ) {
-				return self::error( 'product_status_invalid', 'Product status is invalid.', 400 );
+				return self::error( 'product_status_invalid', __( 'Product status is invalid.', 'digitalogic-viewer-bridge' ), 400 );
 			}
 			return array( 'status' => $status );
 		}
 		if ( $action === 'product.set_stock_status' ) {
 			$status = sanitize_key( (string) ( $payload['stockStatus'] ?? '' ) );
 			if ( ! in_array( $status, array( 'instock', 'outofstock', 'onbackorder' ), true ) ) {
-				return self::error( 'stock_status_invalid', 'Stock status is invalid.', 400 );
+				return self::error( 'stock_status_invalid', __( 'Stock status is invalid.', 'digitalogic-viewer-bridge' ), 400 );
 			}
 			return array( 'stockStatus' => $status );
 		}
@@ -1011,7 +1012,7 @@ final class Actions {
 			if ( ! is_array( $payload['categoryIds'] ) ) {
 				return self::error(
 					'category_ids_invalid',
-					'categoryIds must be an array.',
+					__( 'categoryIds must be an array.', 'digitalogic-viewer-bridge' ),
 					400
 				);
 			}
@@ -1032,21 +1033,21 @@ final class Actions {
 				)
 			);
 			if ( ! $ids ) {
-				return self::error( 'category_ids_invalid', 'At least one category is required.', 400 );
+				return self::error( 'category_ids_invalid', __( 'At least one category is required.', 'digitalogic-viewer-bridge' ), 400 );
 			}
 			return array( 'categoryIds' => $ids );
 		}
 		if ( $action === 'order.set_status' ) {
 			$status = sanitize_key( (string) ( $payload['status'] ?? '' ) );
 			if ( ! in_array( $status, Live_State::mutable_order_statuses(), true ) ) {
-				return self::error( 'order_status_invalid', 'Order status is not mutable.', 400 );
+				return self::error( 'order_status_invalid', __( 'Order status is not mutable.', 'digitalogic-viewer-bridge' ), 400 );
 			}
 			return array( 'status' => $status );
 		}
 		if ( $action === 'customer.set_segment' ) {
 			$segment = sanitize_key( (string) ( $payload['segment'] ?? '' ) );
 			if ( ! in_array( $segment, Live_State::customer_segments(), true ) ) {
-				return self::error( 'customer_segment_invalid', 'Customer segment is invalid.', 400 );
+				return self::error( 'customer_segment_invalid', __( 'Customer segment is invalid.', 'digitalogic-viewer-bridge' ), 400 );
 			}
 			return array( 'segment' => $segment );
 		}
@@ -1058,7 +1059,7 @@ final class Actions {
 			if ( ! preg_match( '/^cat:[A-Za-z0-9._:%-]+$/', $target ) ) {
 				return self::error(
 					'reassignment_target_invalid',
-					'Reassignment category is invalid.',
+					__( 'Reassignment category is invalid.', 'digitalogic-viewer-bridge' ),
 					400
 				);
 			}
@@ -1067,7 +1068,7 @@ final class Actions {
 		if ( $action === 'entity.restore' ) {
 			return array();
 		}
-		return self::error( 'payload_invalid', 'Action payload is invalid.', 400 );
+		return self::error( 'payload_invalid', __( 'Action payload is invalid.', 'digitalogic-viewer-bridge' ), 400 );
 	}
 
 	/**
@@ -1102,14 +1103,14 @@ final class Actions {
 		if ( $header === '' || ! preg_match( '/^rev:[a-f0-9]{64}$/', $header ) ) {
 			return self::error(
 				'if_match_required',
-				'A current If-Match revision is required.',
+				__( 'A current If-Match revision is required.', 'digitalogic-viewer-bridge' ),
 				428
 			);
 		}
 		if ( $body_revision !== '' && ! hash_equals( $header, $body_revision ) ) {
 			return self::error(
 				'revision_headers_disagree',
-				'The body revision and If-Match header disagree.',
+				__( 'The body revision and If-Match header disagree.', 'digitalogic-viewer-bridge' ),
 				400
 			);
 		}
@@ -1124,7 +1125,7 @@ final class Actions {
 	): WP_Error {
 		return new WP_Error(
 			'digitalogic_viewer_' . sanitize_key( $code ),
-			__( $message, 'digitalogic-viewer-bridge' ),
+			$message,
 			array_merge( array( 'status' => $status ), $data )
 		);
 	}

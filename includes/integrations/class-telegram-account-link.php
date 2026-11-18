@@ -359,22 +359,22 @@ final class Digitalogic_Telegram_Account_Link {
 	 */
 	public function authorize_server_request( WP_REST_Request $request ) {
 		if ( ! self::woocommerce_ready() || ! self::supports_site_topology() || ! self::is_schema_ready() ) {
-			return new WP_Error( 'digitalogic_assistant_unavailable', 'این قابلیت موقتاً در دسترس نیست.', array( 'status' => 503 ) );
+			return new WP_Error( 'digitalogic_assistant_unavailable', __( 'این قابلیت موقتاً در دسترس نیست.', 'digitalogic' ), array( 'status' => 503 ) );
 		}
 
 		$secret = self::server_secret();
 		if ( '' === $secret ) {
-			return new WP_Error( 'digitalogic_assistant_unavailable', 'این قابلیت موقتاً در دسترس نیست.', array( 'status' => 503 ) );
+			return new WP_Error( 'digitalogic_assistant_unavailable', __( 'این قابلیت موقتاً در دسترس نیست.', 'digitalogic' ), array( 'status' => 503 ) );
 		}
 
 		$content_type = strtolower( (string) $request->get_header( 'content-type' ) );
 		if ( 0 !== strpos( $content_type, 'application/json' ) ) {
-			return new WP_Error( 'digitalogic_assistant_content_type', 'درخواست معتبر نیست.', array( 'status' => 415 ) );
+			return new WP_Error( 'digitalogic_assistant_content_type', __( 'درخواست معتبر نیست.', 'digitalogic' ), array( 'status' => 415 ) );
 		}
 
 		$raw_body = (string) $request->get_body();
 		if ( '' === $raw_body || strlen( $raw_body ) > 4096 ) {
-			return new WP_Error( 'digitalogic_assistant_body', 'درخواست معتبر نیست.', array( 'status' => 400 ) );
+			return new WP_Error( 'digitalogic_assistant_body', __( 'درخواست معتبر نیست.', 'digitalogic' ), array( 'status' => 400 ) );
 		}
 
 		$timestamp = trim( (string) $request->get_header( 'x-digitalogic-timestamp' ) );
@@ -384,12 +384,12 @@ final class Digitalogic_Telegram_Account_Link {
 		if ( ! preg_match( '/^[0-9]{10}$/', $timestamp )
 			|| ! preg_match( '/^[A-Za-z0-9_-]{22,64}$/', $nonce )
 			|| ! preg_match( '/^[a-f0-9]{64}$/', $signature ) ) {
-			return new WP_Error( 'digitalogic_assistant_auth', 'دسترسی مجاز نیست.', array( 'status' => 401 ) );
+			return new WP_Error( 'digitalogic_assistant_auth', __( 'دسترسی مجاز نیست.', 'digitalogic' ), array( 'status' => 401 ) );
 		}
 
 		$request_time = (int) $timestamp;
 		if ( abs( time() - $request_time ) > self::SERVER_CLOCK_SKEW ) {
-			return new WP_Error( 'digitalogic_assistant_auth', 'دسترسی مجاز نیست.', array( 'status' => 401 ) );
+			return new WP_Error( 'digitalogic_assistant_auth', __( 'دسترسی مجاز نیست.', 'digitalogic' ), array( 'status' => 401 ) );
 		}
 
 		$canonical = strtoupper( (string) $request->get_method() )
@@ -399,7 +399,7 @@ final class Digitalogic_Telegram_Account_Link {
 			. "\n" . $raw_body;
 		$expected  = hash_hmac( 'sha256', $canonical, $secret );
 		if ( ! hash_equals( $expected, $signature ) ) {
-			return new WP_Error( 'digitalogic_assistant_auth', 'دسترسی مجاز نیست.', array( 'status' => 401 ) );
+			return new WP_Error( 'digitalogic_assistant_auth', __( 'دسترسی مجاز نیست.', 'digitalogic' ), array( 'status' => 401 ) );
 		}
 
 		$nonce_result = $this->claim_server_nonce( $nonce, $secret );
@@ -423,7 +423,7 @@ final class Digitalogic_Telegram_Account_Link {
 		$token       = is_array( $payload ) ? (string) ( $payload['token'] ?? '' ) : '';
 		$telegram_id = is_array( $payload ) ? (string) ( $payload['telegram_id'] ?? '' ) : '';
 		if ( ! preg_match( '/^[A-Za-z0-9_-]{43}$/', $token ) || ! self::valid_telegram_id( $telegram_id ) ) {
-			return new WP_Error( 'digitalogic_assistant_request', 'درخواست معتبر نیست.', array( 'status' => 400 ) );
+			return new WP_Error( 'digitalogic_assistant_request', __( 'درخواست معتبر نیست.', 'digitalogic' ), array( 'status' => 400 ) );
 		}
 
 		$token_hash    = self::token_hash( $token );
@@ -446,11 +446,11 @@ final class Digitalogic_Telegram_Account_Link {
 			)
 		);
 		if ( $hint_user_id < 1 ) {
-			return new WP_Error( 'digitalogic_assistant_token', 'کد اتصال معتبر نیست یا منقضی شده است.', array( 'status' => 400 ) );
+			return new WP_Error( 'digitalogic_assistant_token', __( 'کد اتصال معتبر نیست یا منقضی شده است.', 'digitalogic' ), array( 'status' => 400 ) );
 		}
 
 		if ( false === $wpdb->query( 'START TRANSACTION' ) ) {
-			return new WP_Error( 'digitalogic_assistant_storage', 'این قابلیت موقتاً در دسترس نیست.', array( 'status' => 503 ) );
+			return new WP_Error( 'digitalogic_assistant_storage', __( 'این قابلیت موقتاً در دسترس نیست.', 'digitalogic' ), array( 'status' => 503 ) );
 		}
 		$locked_user_id = $wpdb->get_var(
 			$wpdb->prepare(
@@ -460,7 +460,7 @@ final class Digitalogic_Telegram_Account_Link {
 		);
 		if ( null === $locked_user_id ) {
 			$wpdb->query( 'ROLLBACK' );
-			return new WP_Error( 'digitalogic_assistant_token', 'کد اتصال معتبر نیست یا منقضی شده است.', array( 'status' => 400 ) );
+			return new WP_Error( 'digitalogic_assistant_token', __( 'کد اتصال معتبر نیست یا منقضی شده است.', 'digitalogic' ), array( 'status' => 400 ) );
 		}
 
 		$token_row = $wpdb->get_row(
@@ -478,7 +478,7 @@ final class Digitalogic_Telegram_Account_Link {
 			|| 'pending' !== (string) $token_row['status']
 			|| strtotime( (string) $token_row['expires_at'] . ' UTC' ) <= time() ) {
 			$wpdb->query( 'ROLLBACK' );
-			return new WP_Error( 'digitalogic_assistant_token', 'کد اتصال معتبر نیست یا منقضی شده است.', array( 'status' => 400 ) );
+			return new WP_Error( 'digitalogic_assistant_token', __( 'کد اتصال معتبر نیست یا منقضی شده است.', 'digitalogic' ), array( 'status' => 400 ) );
 		}
 
 		$user_id = $hint_user_id;
@@ -501,12 +501,12 @@ final class Digitalogic_Telegram_Account_Link {
 			);
 			if ( false === $token_result || ! $this->write_audit( 'link_rejected', $user_id, $identity_hash, 'inactive' ) ) {
 				$wpdb->query( 'ROLLBACK' );
-				return new WP_Error( 'digitalogic_assistant_storage', 'این قابلیت موقتاً در دسترس نیست.', array( 'status' => 503 ) );
+				return new WP_Error( 'digitalogic_assistant_storage', __( 'این قابلیت موقتاً در دسترس نیست.', 'digitalogic' ), array( 'status' => 503 ) );
 			}
 			if ( false === $wpdb->query( 'COMMIT' ) ) {
-				return new WP_Error( 'digitalogic_assistant_storage', 'این قابلیت موقتاً در دسترس نیست.', array( 'status' => 503 ) );
+				return new WP_Error( 'digitalogic_assistant_storage', __( 'این قابلیت موقتاً در دسترس نیست.', 'digitalogic' ), array( 'status' => 503 ) );
 			}
-			return new WP_Error( 'digitalogic_assistant_account', 'این حساب شرایط استفاده از اتصال را ندارد.', array( 'status' => 403 ) );
+			return new WP_Error( 'digitalogic_assistant_account', __( 'این حساب شرایط استفاده از اتصال را ندارد.', 'digitalogic' ), array( 'status' => 403 ) );
 		}
 
 		$identity_owner = $wpdb->get_var(
@@ -517,7 +517,7 @@ final class Digitalogic_Telegram_Account_Link {
 		);
 		if ( null !== $identity_owner && (int) $identity_owner !== $user_id ) {
 			$wpdb->query( 'ROLLBACK' );
-			return new WP_Error( 'digitalogic_assistant_identity', 'این شناسه قبلاً به حساب دیگری متصل شده است.', array( 'status' => 409 ) );
+			return new WP_Error( 'digitalogic_assistant_identity', __( 'این شناسه قبلاً به حساب دیگری متصل شده است.', 'digitalogic' ), array( 'status' => 409 ) );
 		}
 
 		$link_result = $wpdb->query(
@@ -543,7 +543,7 @@ final class Digitalogic_Telegram_Account_Link {
 		);
 		if ( false === $link_result ) {
 			$wpdb->query( 'ROLLBACK' );
-			return new WP_Error( 'digitalogic_assistant_storage', 'این قابلیت موقتاً در دسترس نیست.', array( 'status' => 503 ) );
+			return new WP_Error( 'digitalogic_assistant_storage', __( 'این قابلیت موقتاً در دسترس نیست.', 'digitalogic' ), array( 'status' => 503 ) );
 		}
 
 		$token_result = $wpdb->update(
@@ -564,11 +564,11 @@ final class Digitalogic_Telegram_Account_Link {
 		);
 		if ( 1 !== $token_result || ! $this->write_audit( 'link_bound', $user_id, $identity_hash, 'success' ) ) {
 			$wpdb->query( 'ROLLBACK' );
-			return new WP_Error( 'digitalogic_assistant_storage', 'این قابلیت موقتاً در دسترس نیست.', array( 'status' => 503 ) );
+			return new WP_Error( 'digitalogic_assistant_storage', __( 'این قابلیت موقتاً در دسترس نیست.', 'digitalogic' ), array( 'status' => 503 ) );
 		}
 
 		if ( false === $wpdb->query( 'COMMIT' ) ) {
-			return new WP_Error( 'digitalogic_assistant_storage', 'این قابلیت موقتاً در دسترس نیست.', array( 'status' => 503 ) );
+			return new WP_Error( 'digitalogic_assistant_storage', __( 'این قابلیت موقتاً در دسترس نیست.', 'digitalogic' ), array( 'status' => 503 ) );
 		}
 		$this->cleanup_storage();
 
@@ -587,7 +587,7 @@ final class Digitalogic_Telegram_Account_Link {
 		$payload     = $request->get_json_params();
 		$telegram_id = is_array( $payload ) ? (string) ( $payload['telegram_id'] ?? '' ) : '';
 		if ( ! self::valid_telegram_id( $telegram_id ) ) {
-			return new WP_Error( 'digitalogic_assistant_request', 'درخواست معتبر نیست.', array( 'status' => 400 ) );
+			return new WP_Error( 'digitalogic_assistant_request', __( 'درخواست معتبر نیست.', 'digitalogic' ), array( 'status' => 400 ) );
 		}
 
 		$identity_hash = self::identity_hash( $telegram_id );
@@ -598,7 +598,7 @@ final class Digitalogic_Telegram_Account_Link {
 		}
 
 		if ( false === $wpdb->query( 'START TRANSACTION' ) ) {
-			return new WP_Error( 'digitalogic_assistant_storage', 'این قابلیت موقتاً در دسترس نیست.', array( 'status' => 503 ) );
+			return new WP_Error( 'digitalogic_assistant_storage', __( 'این قابلیت موقتاً در دسترس نیست.', 'digitalogic' ), array( 'status' => 503 ) );
 		}
 		$link = $wpdb->get_row(
 			$wpdb->prepare(
@@ -636,7 +636,7 @@ final class Digitalogic_Telegram_Account_Link {
 			);
 			if ( false === $updated || ! $this->write_audit( 'link_disabled', $user_id, $identity_hash, 'inactive' ) ) {
 				$wpdb->query( 'ROLLBACK' );
-				return new WP_Error( 'digitalogic_assistant_storage', 'این قابلیت موقتاً در دسترس نیست.', array( 'status' => 503 ) );
+				return new WP_Error( 'digitalogic_assistant_storage', __( 'این قابلیت موقتاً در دسترس نیست.', 'digitalogic' ), array( 'status' => 503 ) );
 			}
 			$wpdb->query( 'COMMIT' );
 			return $this->no_store_response( self::eligibility_payload( null, false ), 200 );
@@ -659,10 +659,10 @@ final class Digitalogic_Telegram_Account_Link {
 		);
 		if ( false === $updated ) {
 			$wpdb->query( 'ROLLBACK' );
-			return new WP_Error( 'digitalogic_assistant_storage', 'این قابلیت موقتاً در دسترس نیست.', array( 'status' => 503 ) );
+			return new WP_Error( 'digitalogic_assistant_storage', __( 'این قابلیت موقتاً در دسترس نیست.', 'digitalogic' ), array( 'status' => 503 ) );
 		}
 		if ( false === $wpdb->query( 'COMMIT' ) ) {
-			return new WP_Error( 'digitalogic_assistant_storage', 'این قابلیت موقتاً در دسترس نیست.', array( 'status' => 503 ) );
+			return new WP_Error( 'digitalogic_assistant_storage', __( 'این قابلیت موقتاً در دسترس نیست.', 'digitalogic' ), array( 'status' => 503 ) );
 		}
 
 		return $this->no_store_response( self::eligibility_payload( $user, true ), 200 );
@@ -1303,7 +1303,7 @@ final class Digitalogic_Telegram_Account_Link {
 			$limit  = self::CONSUME_RATE_LIMIT;
 			$window = self::CONSUME_RATE_WINDOW;
 		} else {
-			return new WP_Error( 'digitalogic_assistant_storage', 'این قابلیت موقتاً در دسترس نیست.', array( 'status' => 503 ) );
+			return new WP_Error( 'digitalogic_assistant_storage', __( 'این قابلیت موقتاً در دسترس نیست.', 'digitalogic' ), array( 'status' => 503 ) );
 		}
 
 		$result = $this->hit_rate_bucket( 'signed-' . $operation, $identity_hash, $limit, $window );
@@ -1313,11 +1313,11 @@ final class Digitalogic_Telegram_Account_Link {
 		if ( 'digitalogic_assistant_rate' === $result->get_error_code() ) {
 			return new WP_Error(
 				'digitalogic_assistant_signed_rate',
-				'تعداد درخواست‌ها بیش از حد مجاز است. کمی بعد دوباره تلاش کنید.',
+				__( 'تعداد درخواست‌ها بیش از حد مجاز است. کمی بعد دوباره تلاش کنید.', 'digitalogic' ),
 				array( 'status' => 429 )
 			);
 		}
-		return new WP_Error( 'digitalogic_assistant_storage', 'این قابلیت موقتاً در دسترس نیست.', array( 'status' => 503 ) );
+		return new WP_Error( 'digitalogic_assistant_storage', __( 'این قابلیت موقتاً در دسترس نیست.', 'digitalogic' ), array( 'status' => 503 ) );
 	}
 
 	/**
@@ -1427,9 +1427,9 @@ final class Digitalogic_Telegram_Account_Link {
 				$wpdb->prepare( "SELECT nonce_hash FROM $nonces WHERE nonce_hash = %s", $nonce_hash )
 			);
 			if ( is_string( $exists ) ) {
-				return new WP_Error( 'digitalogic_assistant_replay', 'دسترسی مجاز نیست.', array( 'status' => 409 ) );
+				return new WP_Error( 'digitalogic_assistant_replay', __( 'دسترسی مجاز نیست.', 'digitalogic' ), array( 'status' => 409 ) );
 			}
-			return new WP_Error( 'digitalogic_assistant_storage', 'این قابلیت موقتاً در دسترس نیست.', array( 'status' => 503 ) );
+			return new WP_Error( 'digitalogic_assistant_storage', __( 'این قابلیت موقتاً در دسترس نیست.', 'digitalogic' ), array( 'status' => 503 ) );
 		}
 
 		return true;

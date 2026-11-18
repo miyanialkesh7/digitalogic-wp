@@ -114,7 +114,7 @@ class Digitalogic_Command_Dispatcher {
             return new WP_Error('digitalogic_unauthorized', __('Unauthorized', 'digitalogic'), array('status' => 403));
         }
         if (!is_array($payload) || !is_string($payload['product_code'] ?? null)) {
-            return new WP_Error('digitalogic_pricing_product_code_required', 'An exact product_code is required.', array('status' => 400));
+            return new WP_Error('digitalogic_pricing_product_code_required', __( 'An exact product_code is required.', 'digitalogic' ), array('status' => 400));
         }
         return Digitalogic_Pricing_Coordinator::instance()->recalculate_product($payload['product_code']);
     }
@@ -197,7 +197,7 @@ class Digitalogic_Command_Dispatcher {
         if (1 !== preg_match('/\Asha256:[a-f0-9]{64}\z/D', $expected_revision)) {
             return new WP_Error(
                 'digitalogic_currency_expected_revision_required',
-                'پیش از تغییر نرخ، وضعیت فعلی قیمت را تازه‌سازی کنید.',
+                __( 'پیش از تغییر نرخ، وضعیت فعلی قیمت را تازه‌سازی کنید.', 'digitalogic' ),
                 array('status' => 428, 'blocking' => true)
             );
         }
@@ -205,7 +205,7 @@ class Digitalogic_Command_Dispatcher {
 		if (1 !== preg_match('/\A[a-zA-Z0-9._:-]{8,128}\z/D', $request_id)) {
 			return new WP_Error(
 				'digitalogic_currency_request_id_required',
-				'برای هر تغییر نرخ یک شناسهٔ درخواست یکتا لازم است.',
+				__( 'برای هر تغییر نرخ یک شناسهٔ درخواست یکتا لازم است.', 'digitalogic' ),
 				array('status' => 428, 'blocking' => true)
 			);
 		}

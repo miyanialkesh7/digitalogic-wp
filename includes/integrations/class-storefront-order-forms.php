@@ -463,13 +463,13 @@ final class Digitalogic_Storefront_Order_Forms {
 		$consent    = sanitize_key( $this->posted_scalar( 'consent', 8 ) );
 
 		if ( '' === $name || strlen( preg_replace( '/\D/', '', $mobile ) ) < 10 ) {
-			return new WP_Error( 'contact', 'Contact details are incomplete.' );
+			return new WP_Error( 'contact', __( 'Contact details are incomplete.', 'digitalogic' ) );
 		}
 		if ( '' !== $email && ! is_email( $email ) ) {
-			return new WP_Error( 'email', 'Email is invalid.' );
+			return new WP_Error( 'email', __( 'Email is invalid.', 'digitalogic' ) );
 		}
 		if ( 'yes' !== $consent ) {
-			return new WP_Error( 'consent', 'Consent is required.' );
+			return new WP_Error( 'consent', __( 'Consent is required.', 'digitalogic' ) );
 		}
 
 		return compact( 'name', 'mobile', 'email', 'company' );
@@ -522,7 +522,7 @@ final class Digitalogic_Storefront_Order_Forms {
 		$width        = $this->posted_decimal( 'board_width' );
 
 		if ( '' === $project_name || $quantity < 5 || 0 !== $quantity % 5 || $length <= 0 || $width <= 0 || $length > 600 || $width > 600 ) {
-			return new WP_Error( 'pcb_specs', 'PCB specifications are incomplete.' );
+			return new WP_Error( 'pcb_specs', __( 'PCB specifications are incomplete.', 'digitalogic' ) );
 		}
 
 		return array(
@@ -559,13 +559,13 @@ final class Digitalogic_Storefront_Order_Forms {
 			return $file;
 		}
 		if ( UPLOAD_ERR_OK !== (int) $file['error'] || (int) $file['size'] > 20 * MB_IN_BYTES ) {
-			return new WP_Error( 'file_size', 'Upload failed or file is too large.' );
+			return new WP_Error( 'file_size', __( 'Upload failed or file is too large.', 'digitalogic' ) );
 		}
 
 		$extension = strtolower( pathinfo( sanitize_file_name( $file['name'] ), PATHINFO_EXTENSION ) );
 		$allowed   = 'pcb' === $type ? array( 'zip', 'rar', '7z' ) : array( 'xlsx', 'xls', 'csv', 'pdf', 'zip' );
 		if ( ! in_array( $extension, $allowed, true ) ) {
-			return new WP_Error( 'file_type', 'File extension is not allowed.' );
+			return new WP_Error( 'file_type', __( 'File extension is not allowed.', 'digitalogic' ) );
 		}
 
 		return true;
@@ -583,12 +583,12 @@ final class Digitalogic_Storefront_Order_Forms {
 
 		$file = $_FILES['dgl_request_file']; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- The submission nonce is verified before this helper runs.
 		if ( ! is_array( $file ) || ! isset( $file['error'] ) || ! is_scalar( $file['error'] ) ) {
-			return new WP_Error( 'upload_failed', 'Uploaded file data is invalid.' );
+			return new WP_Error( 'upload_failed', __( 'Uploaded file data is invalid.', 'digitalogic' ) );
 		}
 
 		$error_value = $this->upload_scalar( $file, 'error', 3 );
 		if ( ! preg_match( '/^[0-9]+$/D', $error_value ) ) {
-			return new WP_Error( 'upload_failed', 'Uploaded file data is invalid.' );
+			return new WP_Error( 'upload_failed', __( 'Uploaded file data is invalid.', 'digitalogic' ) );
 		}
 
 		$error = (int) $error_value;
@@ -602,7 +602,7 @@ final class Digitalogic_Storefront_Order_Forms {
 		$size     = preg_match( '/^[0-9]+$/D', $size_raw ) ? (int) $size_raw : 0;
 
 		if ( UPLOAD_ERR_OK === $error && ( '' === $name || '' === $tmp_name || ! preg_match( '/^[0-9]+$/D', $size_raw ) ) ) {
-			return new WP_Error( 'upload_failed', 'Uploaded file data is invalid.' );
+			return new WP_Error( 'upload_failed', __( 'Uploaded file data is invalid.', 'digitalogic' ) );
 		}
 
 		return array(
@@ -623,7 +623,7 @@ final class Digitalogic_Storefront_Order_Forms {
 	private function store_upload( $type, $request_id ) {
 		$file = $this->request_upload();
 		if ( ! is_array( $file ) ) {
-			return new WP_Error( 'upload_failed', 'Uploaded file data is invalid.' );
+			return new WP_Error( 'upload_failed', __( 'Uploaded file data is invalid.', 'digitalogic' ) );
 		}
 
 		$extension = strtolower( pathinfo( sanitize_file_name( $file['name'] ), PATHINFO_EXTENSION ) );
@@ -635,7 +635,7 @@ final class Digitalogic_Storefront_Order_Forms {
 		$filename = sprintf( '%1$s-%2$d-%3$s.%4$s', $type, $request_id, strtolower( wp_generate_password( 18, false, false ) ), $extension );
 		$path     = trailingslashit( $directory ) . $filename;
 		if ( ! is_uploaded_file( $file['tmp_name'] ) || ! move_uploaded_file( $file['tmp_name'], $path ) ) { // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.file_ops_move_uploaded_file
-			return new WP_Error( 'upload_failed', 'Could not move uploaded file.' );
+			return new WP_Error( 'upload_failed', __( 'Could not move uploaded file.', 'digitalogic' ) );
 		}
 		chmod( $path, 0640 ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_chmod
 
@@ -664,7 +664,7 @@ final class Digitalogic_Storefront_Order_Forms {
 
 		$fallback = wp_normalize_path( trailingslashit( WP_CONTENT_DIR ) . 'uploads/digitalogic-private-requests' );
 		if ( ! ( is_dir( $fallback ) || wp_mkdir_p( $fallback ) ) || ! is_writable( $fallback ) ) {
-			return new WP_Error( 'upload_directory', 'Private upload directory is not writable.' );
+			return new WP_Error( 'upload_directory', __( 'Private upload directory is not writable.', 'digitalogic' ) );
 		}
 		$this->write_access_guards( $fallback );
 

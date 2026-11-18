@@ -185,6 +185,7 @@ class Digitalogic_Patris_Feed {
 
         $code = wp_remote_retrieve_response_code($response);
         if ($code < 200 || $code >= 300) {
+            /* translators: %d: HTTP response status code. */
             return new WP_Error('digitalogic_patris_http_error', sprintf(__('Source API returned HTTP %d.', 'digitalogic'), $code));
         }
 
@@ -272,6 +273,7 @@ class Digitalogic_Patris_Feed {
 					if ( ! $product ) {
 						++$results['failed'];
 						$results['errors'][] = sprintf(
+							/* translators: %s: Patris product code. */
 							__( 'WooCommerce product for %s could not be loaded.', 'digitalogic' ),
 							$product_data['product_code']
 						);
@@ -1699,7 +1701,7 @@ class Digitalogic_Patris_Feed {
 				) {
 					return new WP_Error(
 						'digitalogic_pricing_batch_storage_unavailable',
-						'Bulk WooCommerce pricing storage is unavailable.',
+						__( 'Bulk WooCommerce pricing storage is unavailable.', 'digitalogic' ),
 						array( 'status' => 503 )
 					);
 				}
@@ -1728,7 +1730,7 @@ class Digitalogic_Patris_Feed {
 					) {
 						return new WP_Error(
 							'digitalogic_pricing_batch_product_unsupported',
-							'A pricing batch contained an unavailable or variable WooCommerce product.',
+							__( 'A pricing batch contained an unavailable or variable WooCommerce product.', 'digitalogic' ),
 							array( 'status' => 409 )
 						);
 					}
@@ -1736,7 +1738,7 @@ class Digitalogic_Patris_Feed {
 					if ( $product_id <= 0 || isset( $plans[ $product_id ] ) ) {
 						return new WP_Error(
 							'digitalogic_pricing_batch_identity_invalid',
-							'A pricing batch contained a duplicate or invalid WooCommerce product ID.',
+							__( 'A pricing batch contained a duplicate or invalid WooCommerce product ID.', 'digitalogic' ),
 							array( 'status' => 409 )
 						);
 					}
@@ -1745,7 +1747,7 @@ class Digitalogic_Patris_Feed {
 						if ( $parent_id <= 0 ) {
 							return new WP_Error(
 								'digitalogic_pricing_batch_variation_parent_invalid',
-								'A pricing batch contained a variation without a canonical parent.',
+								__( 'A pricing batch contained a variation without a canonical parent.', 'digitalogic' ),
 								array( 'status' => 409 )
 							);
 						}
@@ -1789,7 +1791,7 @@ class Digitalogic_Patris_Feed {
 					) {
 						return new WP_Error(
 							'digitalogic_pricing_batch_shipping_assignment_conflict',
-							'A pricing batch contained a non-canonical materialization identity.',
+							__( 'A pricing batch contained a non-canonical materialization identity.', 'digitalogic' ),
 							array( 'status' => 409 )
 						);
 					}
@@ -1801,7 +1803,7 @@ class Digitalogic_Patris_Feed {
 					) {
 						return new WP_Error(
 							'digitalogic_pricing_batch_shipping_assignment_mismatch',
-							'The site-owned shipping assignment changed during pricing reconciliation.',
+							__( 'The site-owned shipping assignment changed during pricing reconciliation.', 'digitalogic' ),
 							array( 'status' => 409 )
 						);
 					}
@@ -1855,7 +1857,7 @@ class Digitalogic_Patris_Feed {
 						) {
 							return new WP_Error(
 								'digitalogic_pricing_batch_materialization_source_invalid',
-								'A pricing batch contained an invalid materialization source.',
+								__( 'A pricing batch contained an invalid materialization source.', 'digitalogic' ),
 								array( 'status' => 409 )
 							);
 						}
@@ -1894,7 +1896,7 @@ class Digitalogic_Patris_Feed {
 						) {
 							return new WP_Error(
 								'digitalogic_pricing_batch_operational_projection_changed',
-								'An auto-materialized product changed after bulk pricing preflight.',
+								__( 'An auto-materialized product changed after bulk pricing preflight.', 'digitalogic' ),
 								array( 'status' => 409 )
 							);
 						}
@@ -1930,7 +1932,7 @@ class Digitalogic_Patris_Feed {
 					) {
 						return new WP_Error(
 							'digitalogic_pricing_batch_operational_projection_changed',
-							'A product lookup projection changed after bulk pricing preflight.',
+							__( 'A product lookup projection changed after bulk pricing preflight.', 'digitalogic' ),
 							array( 'status' => 409 )
 						);
 					}
@@ -2357,7 +2359,7 @@ class Digitalogic_Patris_Feed {
 		}
 		return new WP_Error(
 			'digitalogic_pricing_actuation_guard_rejected',
-			'The pricing transaction guard rejected the next batch.',
+			__( 'The pricing transaction guard rejected the next batch.', 'digitalogic' ),
 			array( 'blocking' => true )
 		);
 	}
@@ -2480,7 +2482,7 @@ class Digitalogic_Patris_Feed {
 			? true
 			: new WP_Error(
 				'digitalogic_pricing_batch_leaf_lookup_repair_readback_failed',
-				'WooCommerce leaf lookup repair did not pass exact readback.',
+				__( 'WooCommerce leaf lookup repair did not pass exact readback.', 'digitalogic' ),
 				array(
 					'status'          => 502,
 					'woocommerce_ids' => array_values( $drifted ),
@@ -3354,7 +3356,7 @@ class Digitalogic_Patris_Feed {
 	private function pricing_batch_error( $phase ) {
 		return new WP_Error(
 			'digitalogic_pricing_batch_' . sanitize_key( (string) $phase ) . '_failed',
-			'Bulk WooCommerce pricing storage failed and was rolled back.',
+			__( 'Bulk WooCommerce pricing storage failed and was rolled back.', 'digitalogic' ),
 			array( 'status' => 500 )
 		);
 	}
